@@ -1,7 +1,9 @@
-from django.contrib.auth.models import User
 from django.db import models
 from django.conf import settings
 from pyoneall.base import OADict
+
+user_model = getattr(settings, 'AUTH_USER_MODEL', 'auth.User').split('.')
+User = models.loading.get_model('.'.join(user_model[:-1]), user_model[-1])
 
 class OneAllUserIdentity(models.Model):
     """
