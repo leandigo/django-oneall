@@ -21,10 +21,15 @@ class OneAllAuthBackend(object):
         oa_user = oneall.connection(token).user
 
         # Check if user exists and create one if not
-        identity, created = OneAllUserIdentity.objects.get_or_create(
-            user_token=oa_user.user_token,
-            raw=unicode(oa_user.identity)
-        )
+        identity, created = None, False
+        try:
+            identity = OneAllUserIdentity.objects.get(user_token=oa_user.user_token)
+        except OneAllUserIdentity.DoesNotExist:
+            identity, created = OneAllUserIdentity(
+                user_token=oa_user.user_token,
+                raw=unicode(oa_user.identity)
+            )
+            created = True
 
         # Update cache for new users and for existing users if setting is provided
         if created:
