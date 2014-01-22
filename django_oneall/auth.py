@@ -1,5 +1,5 @@
 from pyoneall import OneAll
-from django.contrib.auth.models import User
+from models import User
 from django.conf import settings
 from django.db.models import get_model
 
