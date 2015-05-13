@@ -1,4 +1,4 @@
-from base import OAList, OADict
+from .base import OAList, OADict
 
 class Users(OADict):
     """

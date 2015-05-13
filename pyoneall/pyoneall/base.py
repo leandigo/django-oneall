@@ -21,7 +21,7 @@ class OAList(list):
 
         self._dict_items = [item for item in self if isinstance(item, OADict)]
 
-        for key in set().union(*[item.keys() for item in self._dict_items]):
+        for key in set().union(*[list(item.keys()) for item in self._dict_items]):
             setattr(self, 'by_%s' % key, self._by_attr(key))
 
     def _by_attr(self, attr):
@@ -59,9 +59,9 @@ class OADict(dict):
     def __init__(self, *args, **kwargs):
         super(OADict, self).__init__(
             *args,
-            **dict((key, _convert_base(value)) for key, value in kwargs.iteritems())
+            **dict((key, _convert_base(value)) for key, value in kwargs.items())
         )
-        [setattr(self, key, value) for key, value in self.iteritems()]
+        [setattr(self, key, value) for key, value in self.items()]
         self._populate()
 
     def __setattr__(self, key, value):

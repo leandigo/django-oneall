@@ -1,5 +1,5 @@
 from pyoneall import OneAll
-from models import User
+from .models import User
 from django.conf import settings
 from django.db.models import get_model
 
@@ -27,7 +27,7 @@ class OneAllAuthBackend(object):
         except OneAllUserIdentity.DoesNotExist:
             identity, created = OneAllUserIdentity(
                 user_token=oa_user.user_token,
-                raw=unicode(oa_user.identity)
+                raw=str(oa_user.identity)
             )
             created = True
 

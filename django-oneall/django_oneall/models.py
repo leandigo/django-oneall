@@ -26,11 +26,11 @@ class OneAllUserIdentity(models.Model):
         Refresh identity cache from OneAll
         """
         if not raw:
-            from auth import oneall
+            from .auth import oneall
             raw = oneall.user(self.user.username).identities.identity[0]
         raw.pop('id', None)
         raw.pop('user', None)
-        self.raw = unicode(raw)
+        self.raw = str(raw)
         self.__dict__.update(OADict(**eval(self.raw)))
         self.save()
 
@@ -39,13 +39,13 @@ class OneAllUserIdentity(models.Model):
         Update selected fields in the User model from social identity
         """
         user = self.user if self.user else User()
-        for field, values in getattr(settings, 'ONEALL_CACHE_FIELDS', {}).iteritems():
+        for field, values in getattr(settings, 'ONEALL_CACHE_FIELDS', {}).items():
             for value in values:
                 try:
                     setattr(user, field, eval('self.%s' % value))
-                    print eval('self.%s' % value)
+                    print(eval('self.%s' % value))
                 except Exception as e:
-                    print e
+                    print(e)
         user.save()
         if not self.user:
             self.user = user
