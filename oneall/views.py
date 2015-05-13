@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login
 from django.conf import settings
