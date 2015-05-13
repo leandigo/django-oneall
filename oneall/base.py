@@ -28,6 +28,7 @@ class OAList(list):
         """
         Create a custom by_attr function for grouping and searching
         """
+
         def by_attr(query=None, first=False):
             if query:
                 ret = []
@@ -41,14 +42,16 @@ class OAList(list):
             else:
                 ret = {}
                 [ret.setdefault(item.get(attr), []).append(item) for item in self._dict_items
-                    if not (isinstance(item.get(attr), OADict) or isinstance(item.get(attr), OAList))]
+                 if not (isinstance(item.get(attr), OADict) or isinstance(item.get(attr), OAList))]
                 return ret
+
         return by_attr
 
     def drop_nulls(self):
         while self.count(None):
             self.remove(None)
         [item.drop_nulls() for item in self if isinstance(item, OADict) or isinstance(item, OAList)]
+
 
 class OADict(dict):
     """
@@ -75,8 +78,9 @@ class OADict(dict):
     def _populate(self):
         pass
 
+
 def _convert_base(item):
     return {
-        dict : lambda: OADict(**item),
-        list : lambda: OAList(item),
+        dict: lambda: OADict(**item),
+        list: lambda: OAList(item),
     }.get(type(item), lambda: item)()

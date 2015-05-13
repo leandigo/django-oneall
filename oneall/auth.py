@@ -1,17 +1,18 @@
-from pyoneall import OneAll
-from .models import User
 from django.conf import settings
-from django.db.models import get_model
 
-OneAllUserIdentity = get_model('django_oneall', 'OneAllUserIdentity')
+from .connection import OneAll
+from .models import User, OneAllUserIdentity
+
 
 # The worker to be used for authentication
 oneall = OneAll(settings.ONEALL_SITE_NAME, settings.ONEALL_PUBLIC_KEY, settings.ONEALL_PRIVATE_KEY)
+
 
 class OneAllAuthBackend(object):
     """
     OneAll Authentication Backend.
     """
+
     def authenticate(self, token):
         """
         Performs authentication using a connection token. Creates and updates User and OneAllUserIdentity
