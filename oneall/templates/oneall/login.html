@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <script type="text/javascript">
+        var oa = document.createElement('script');
+        oa.type = 'text/javascript'; oa.async = true;
+        oa.src = '//abando.api.oneall.com/socialize/library.js'
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(oa, s)
+    </script>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+<!-- The plugin will be embedded into this div //-->
+<div id="oa_social_login_container"></div>
+
+<script type="text/javascript">
+    var _oneall = _oneall || [];
+    _oneall.push(['social_login', 'set_callback_uri', window.location.href]);
+    _oneall.push(['social_login', 'set_providers', ['facebook', 'google', 'twitter']]);
+    _oneall.push(['social_login', 'set_custom_css_uri', 'https://oneallcdn.com/css/api/socialize/themes/buildin/signup/large-v1.css']);
+    _oneall.push(['social_login', 'set_grid_sizes', [1,]]);
+    _oneall.push(['social_login', 'do_render_ui', 'oa_social_login_container']);
+</script>
+</body>
+</html>

@@ -1,17 +1,19 @@
 # -*- coding: utf-8 -*-
+from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login
-from django.conf import settings
-from django.http import HttpResponseRedirect
+from django.http import HttpRequest, HttpResponse
 
 
 @csrf_exempt
-def oneall_auth(request):
+def oneall_auth(request: HttpRequest) -> HttpResponse:
     """
-    Callback view for OneAll Authentication
-    :returns HttpResponseRedirect: A redirection to the LOGIN_REDIRECT_URL
+    Display and callback view for OneAll Authentication.
     """
-    connection_token = request.POST['connection_token']
-    user = authenticate(token=connection_token)
-    login(request, user)
-    return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
+    if request.method == 'POST':
+        connection_token = request.POST['connection_token']
+        user = authenticate(token=connection_token)
+        login(request, user)
+        return redirect(request.GET.get('next') or '/')
+    else:
+        return render(request, 'oneall/login.html')
