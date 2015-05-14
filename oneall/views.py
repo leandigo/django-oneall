@@ -13,7 +13,7 @@ def oneall_auth(request: HttpRequest) -> HttpResponse:
     if request.method == 'POST':
         connection_token = request.POST['connection_token']
         user = authenticate(token=connection_token)
-        login(request, user)
-        return redirect(request.GET.get('next') or '/')
-    else:
-        return render(request, 'oneall/login.html')
+        if user:
+            login(request, user)
+            return redirect(request.GET.get('next') or '/')
+    return render(request, 'oneall/login.html')

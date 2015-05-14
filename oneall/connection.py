@@ -42,9 +42,9 @@ class OneAll():
                 request_url += "%s%s=%s" % (('?' if ix == 0 else '&'), param, value)
         req = Request(request_url, dumps(post_params) if post_params else None, {'Content-Type': 'application/json'})
         token = '%s:%s' % (self.public_key, self.private_key)
-        auth = standard_b64encode(token.encode('utf-8'))
-        req.add_header('Authorization', 'Basic %s' % auth)
-        return loads(urlopen(req).read())
+        auth = standard_b64encode(token.encode())
+        req.add_header('Authorization', 'Basic %s' % auth.decode())
+        return loads(urlopen(req).read().decode())
 
     def _paginated(self, action, data, page_number=1, last_page=1, fetch_all=False, rtype=OADict):
         """
