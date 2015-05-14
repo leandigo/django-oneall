@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
 
-from .connection import OneAll
+from ..connection import OneAll
 from .models import User, OneAllUserIdentity
 
 
