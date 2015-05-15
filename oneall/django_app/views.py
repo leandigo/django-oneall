@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from json import dumps
+
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
@@ -14,7 +16,11 @@ def oa_login(request: HttpRequest) -> HttpResponse:
     """
     Display and callback view for OneAll Authentication.
     """
-    context = {'oa_site_name': settings.ONEALL_SITE_NAME, 'login_failed': False}
+    context = {
+        'oa_site_name': settings.ONEALL_SITE_NAME,
+        'login_failed': False,
+        'providers': Providers.get(),
+    }
     if request.method == 'POST':
         connection_token = request.POST['connection_token']
         user = authenticate(token=connection_token)
@@ -42,3 +48,14 @@ def oa_profile(request: HttpRequest) -> HttpResponse:
         'identity': OneAllUserIdentity.objects.filter(user=request.user).first(),
     }
     return render(request, 'oneall/profile.html', context)
+
+
+class Providers:
+    default_providers = ['facebook', 'google', 'twitter']
+    providers = None
+
+    @classmethod
+    def get(cls):
+        if not cls.providers:
+            cls.providers = dumps(settings.get('ONEALL_PROVIDERS', cls.default_providers))
+        return cls.providers
