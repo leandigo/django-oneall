@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.conf import settings
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login
@@ -16,4 +17,5 @@ def oneall_auth(request: HttpRequest) -> HttpResponse:
         if user:
             login(request, user)
             return redirect(request.GET.get('next') or '/')
-    return render(request, 'oneall/login.html')
+    context = {'oa_site_name': settings.ONEALL_SITE_NAME}
+    return render(request, 'oneall/login.html', context)
