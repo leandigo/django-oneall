@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpRequest, HttpResponse
+
+from .models import OneAllUserIdentity
 
 
 @csrf_exempt
@@ -28,3 +31,12 @@ def oa_logout(request: HttpRequest) -> HttpResponse:
     logout(request)
     url = request.GET.get('next')
     return redirect(url) if url else render(request, 'oneall/logout.html')
+
+
+@login_required
+def oa_profile(request: HttpRequest) -> HttpResponse:
+    context = {
+        'user': request.user,
+        'identity': OneAllUserIdentity.objects.filter(user=request.user).first(),
+    }
+    return render(request, 'oneall/profile.html', context)
