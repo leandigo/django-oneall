@@ -12,6 +12,11 @@
     <title>Login</title>
 </head>
 <body>
+
+{% if login_failed %}
+<div id="login_failed"> Login failed! Please try again. </div>
+{% endif %}
+
 <!-- The plugin will be embedded into this div //-->
 <div id="oa_social_login_container"></div>
 

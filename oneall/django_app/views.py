@@ -14,13 +14,15 @@ def oa_login(request: HttpRequest) -> HttpResponse:
     """
     Display and callback view for OneAll Authentication.
     """
+    context = {'oa_site_name': settings.ONEALL_SITE_NAME, 'login_failed': False}
     if request.method == 'POST':
         connection_token = request.POST['connection_token']
         user = authenticate(token=connection_token)
         if user:
             login(request, user)
             return redirect(request.GET.get('next') or settings.LOGIN_REDIRECT_URL)
-    context = {'oa_site_name': settings.ONEALL_SITE_NAME}
+        else:
+            context['login_failed'] = True
     return render(request, 'oneall/login.html', context)
 
 
