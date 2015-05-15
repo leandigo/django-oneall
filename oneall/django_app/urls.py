@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 
-urlpatterns = patterns(
-    '',
-    url('', 'oneall.views.oneall_auth', name='oneall_auth'),
-)
+from .views import oa_login, oa_logout
+
+
+urlpatterns = [
+    url('^login', oa_login, name='oneall_login'),
+    url('^logout', oa_logout, name='oneall_logout'),
+]
