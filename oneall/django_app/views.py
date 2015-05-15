@@ -10,6 +10,8 @@ from django.http import HttpRequest, HttpResponse
 
 from .models import OneAllUserIdentity
 
+default_providers = ['facebook', 'google', 'twitter']
+
 
 @csrf_exempt
 def oa_login(request: HttpRequest) -> HttpResponse:
@@ -19,7 +21,7 @@ def oa_login(request: HttpRequest) -> HttpResponse:
     context = {
         'oa_site_name': settings.ONEALL_SITE_NAME,
         'login_failed': False,
-        'providers': Providers.get(),
+        'providers': dumps(settings.get('ONEALL_PROVIDERS', default_providers)),
     }
     if request.method == 'POST':
         connection_token = request.POST['connection_token']
@@ -43,19 +45,11 @@ def oa_logout(request: HttpRequest) -> HttpResponse:
 
 @login_required
 def oa_profile(request: HttpRequest) -> HttpResponse:
+    """
+    View to display logged in user profile along with their OneAll identity.
+    """
     context = {
         'user': request.user,
         'identity': OneAllUserIdentity.objects.filter(user=request.user).first(),
     }
     return render(request, 'oneall/profile.html', context)
-
-
-class Providers:
-    default_providers = ['facebook', 'google', 'twitter']
-    providers = None
-
-    @classmethod
-    def get(cls):
-        if not cls.providers:
-            cls.providers = dumps(settings.get('ONEALL_PROVIDERS', cls.default_providers))
-        return cls.providers
