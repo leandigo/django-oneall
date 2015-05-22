@@ -23,11 +23,9 @@
 <script type="text/javascript">
     var _oneall = _oneall || [];
     _oneall.push(['social_login', 'set_callback_uri', window.location.href]);
-    {% if providers %}
-    _oneall.push(['social_login', 'set_providers', {{providers}}]);
-    {% endif %}
-    _oneall.push(['social_login', 'set_custom_css_uri', 'https://oneallcdn.com/css/api/socialize/themes/buildin/signup/large-v1.css']);
-    _oneall.push(['social_login', 'set_grid_sizes', [1,]]);
+    {% for key, value in oneall_settings.items %}
+    _oneall.push(['social_login', 'set_{{key}}', {{value}}]);
+    {% endfor %}
     _oneall.push(['social_login', 'do_render_ui', 'oa_social_login_container']);
 </script>
 </body>
