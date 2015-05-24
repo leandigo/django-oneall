@@ -22,7 +22,8 @@ def oa_login(request: HttpRequest) -> HttpResponse:
     Display and callback view for OneAll Authentication.
     """
     oa_settings = dict(default_settings)
-    oa_settings.update(settings.ONEALL_LOGIN_WIDGET)
+    if hasattr(settings, 'ONEALL_LOGIN_WIDGET'):
+        oa_settings.update(settings.ONEALL_LOGIN_WIDGET)
     for key, value in oa_settings.items():
         oa_settings[key] = mark_safe(dumps(value))
     context = {
