@@ -1,3 +1,19 @@
+WARNING
+=======
+WARNING
+-------
+WARNING
+```````
+
+**This is the Django documentation from before the fork.**
+
+**A LOT HAS CHANGED.**
+
+**Feel free to file a documentation ticket if you're frustrated.**
+**I'll come and fix it right then.**
+**Right now I'm still focusing on my changes.**
+
+
 django-oneall - Django Authentication support for OneAll
 ========================================================
 
