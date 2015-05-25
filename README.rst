@@ -46,6 +46,7 @@ Sample Django settings
 ----------------------
 
 .. code-block:: python
+
     ONEALL_SITE_NAME = 'py3tests'
     ONEALL_PUBLIC_KEY = 'bf3a6a88-...'
     ONEALL_PRIVATE_KEY = '35fc1a5e-...'

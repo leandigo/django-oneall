@@ -1,9 +1,9 @@
-WARNING
-=======
-WARNING
--------
-WARNING
-```````
+WARNING!
+========
+WARNING!!
+---------
+WARNING!!!
+``````````
 
 **This is the Django documentation from before the fork.**
 
