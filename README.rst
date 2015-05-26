@@ -6,7 +6,7 @@ Authentication with 20+ social networks using OneAll_, with Django_ support.
 This is a fork of `leandigo/django-oneall`_ with the following changes:
 
 - **Python 3!** The modules I've forked from are Python 2 only.
-  I could've just futurized instead, but I find it pollutes the code too much,
+  I could have just futurized_ instead, but I find it pollutes the code too much,
   and I actually want to help motivating the switch away from Py2.
 - **Merged requisite OneAll support into the module,**
   leaving Django support as an optional component of the module.
@@ -19,6 +19,7 @@ This is a fork of `leandigo/django-oneall`_ with the following changes:
 .. _OneAll: https://oneall.com/
 .. _Django: https://www.djangoproject.com/
 .. _leandigo/django-oneall: https://github.com/leandigo/django-oneall
+.. _futurized: http://python-future.org/futurize.html
 .. _python-social-auth: https://github.com/omab/python-social-auth/
 
 
@@ -28,8 +29,8 @@ Further documentation
 - For the `pure Python part of the module`_
 - And for the `Django part of the module`_
 
-.. _pure Python part of the module: core.rst
-.. _Django part of the module: django.rst
+.. _pure Python part of the module: docs/core.rst
+.. _Django part of the module: docs/django.rst
 
 
 Roadmap
