@@ -27,7 +27,7 @@ class OneAllUserIdentity(models.Model):
         Refresh identity cache from OneAll
         """
         if not raw:
-            from ..auth import oneall
+            from .auth import oneall
 
             raw = oneall.user(self.user.username).identities.identity[0]
         raw.pop('id', None)
