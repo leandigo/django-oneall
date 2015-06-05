@@ -36,7 +36,9 @@ def oa_login(request: HttpRequest) -> HttpResponse:
         user = authenticate(token=connection_token)
         if user:
             login(request, user)
-            return redirect(request.GET.get('next') or settings.LOGIN_REDIRECT_URL)
+            response = redirect(request.GET.get('next') or settings.LOGIN_REDIRECT_URL)
+            response.status_code = 303  # See Other
+            return response
         else:
             context['login_failed'] = True
     return render(request, 'oneall/login.html', context)
@@ -48,7 +50,12 @@ def oa_logout(request: HttpRequest) -> HttpResponse:
     """
     logout(request)
     url = request.GET.get('next')
-    return redirect(url) if url else render(request, 'oneall/logout.html')
+    if url:
+        response = redirect(url)
+        response.status_code = 303  # See Other
+        return response
+    else:
+        return render(request, 'oneall/logout.html')
 
 
 @login_required
