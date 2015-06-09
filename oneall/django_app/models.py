@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from re import match
+
 from django.contrib.auth.models import User
 from django.db import models
 from django.conf import settings
@@ -48,6 +50,8 @@ class OneAllUserIdentity(models.Model):
                     print(eval('self.%s' % value))
                 except Exception as e:
                     print(e)
+        if not user.id:
+            user.username = _find_unique_username(user.username)
         user.save()
         if not self.user:
             self.user = user
@@ -55,3 +59,17 @@ class OneAllUserIdentity(models.Model):
 
     class Meta:
         db_table = getattr(settings, 'ONEALL_CACHE_TABLE', 'oneall_cache')
+
+
+def _find_unique_username(current: str):
+    """
+    Checks wether given username is unique. If not unique or not given, tries to derive a new username that is.
+    """
+    exists = lambda n: User.objects.filter(username=n).exists()
+    if current and not exists(current):
+        return current
+    prefix, suffix = match(r'^(.+?)(\d*)$', current or 'user').groups()
+    suffix = int(suffix or 0) + 1
+    while exists(prefix + suffix):
+        suffix += 1
+    return prefix + suffix
