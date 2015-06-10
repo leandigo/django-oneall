@@ -63,13 +63,16 @@ class OneAllUserIdentity(models.Model):
 
 def _find_unique_username(current: str):
     """
-    Checks wether given username is unique. If not unique or not given, tries to derive a new username that is.
+    Checks wether given username is unique.
+    If not unique or not given, tries to derive a new username that is.
     """
     exists = lambda n: User.objects.filter(username=n).exists()
     if current and not exists(current):
         return current
     prefix, suffix = match(r'^(.+?)(\d*)$', current or 'user').groups()
     suffix = int(suffix or 0) + 1
-    while exists(prefix + suffix):
+    current = prefix + str(suffix)
+    while exists(current):
         suffix += 1
-    return prefix + suffix
+        current = prefix + str(suffix)
+    return current
