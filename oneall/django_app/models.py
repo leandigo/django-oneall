@@ -44,7 +44,7 @@ class OneAllUserIdentity(models.Model):
         """
         user = self.user or User()
         if not user.email and 'emails' in self.__dict__ and self.emails:
-            user.email = self.email
+            user.email = self.emails[0]
         if not user.first_name and 'name' in self.__dict__ and 'givenName' in self.name:
             user.first_name = self.name.givenName
         if not user.last_name and 'name' in self.__dict__ and 'familyName' in self.name:
