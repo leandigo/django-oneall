@@ -29,7 +29,7 @@ class OneAllUserIdentity(models.Model):
         Refresh identity cache from OneAll
         """
         if not raw:
-            from ..auth import oneall
+            from .auth import oneall
 
             raw = oneall.user(self.user.username).identities.identity[0]
         raw.pop('id', None)
@@ -42,16 +42,15 @@ class OneAllUserIdentity(models.Model):
         """
         Update selected fields in the User model from social identity
         """
-        user = self.user if self.user else User()
-        for field, values in getattr(settings, 'ONEALL_CACHE_FIELDS', {}).items():
-            for value in values:
-                try:
-                    setattr(user, field, eval('self.%s' % value))
-                    print(eval('self.%s' % value))
-                except Exception as e:
-                    print(e)
-        if not user.id:
-            user.username = _find_unique_username(user.username)
+        user = self.user or User()
+        if not user.email and 'emails' in self.__dict__ and self.emails:
+            user.email = self.emails[0]
+        if not user.first_name and 'name' in self.__dict__ and 'givenName' in self.name:
+            user.first_name = self.name.givenName
+        if not user.last_name and 'name' in self.__dict__ and 'familyName' in self.name:
+            user.last_name = self.name.familyName
+        if not user.username:
+            user.username = _find_unique_username(self.preferredUsername)
         user.save()
         if not self.user:
             self.user = user
