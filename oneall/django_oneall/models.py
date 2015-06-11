@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from re import match
+
 from django.contrib.auth.models import User
 from django.db import models
 from django.conf import settings
@@ -40,14 +42,15 @@ class OneAllUserIdentity(models.Model):
         """
         Update selected fields in the User model from social identity
         """
-        user = self.user if self.user else User()
-        for field, values in getattr(settings, 'ONEALL_CACHE_FIELDS', {}).items():
-            for value in values:
-                try:
-                    setattr(user, field, eval('self.%s' % value))
-                    print(eval('self.%s' % value))
-                except Exception as e:
-                    print(e)
+        user = self.user or User()
+        if not user.email and 'emails' in self.__dict__ and self.emails:
+            user.email = self.emails[0].value
+        if not user.first_name and 'name' in self.__dict__ and 'givenName' in self.name:
+            user.first_name = self.name.givenName
+        if not user.last_name and 'name' in self.__dict__ and 'familyName' in self.name:
+            user.last_name = self.name.familyName
+        if not user.username:
+            user.username = _find_unique_username(self.preferredUsername)
         user.save()
         if not self.user:
             self.user = user
@@ -55,3 +58,20 @@ class OneAllUserIdentity(models.Model):
 
     class Meta:
         db_table = getattr(settings, 'ONEALL_CACHE_TABLE', 'oneall_cache')
+
+
+def _find_unique_username(current: str):
+    """
+    Checks wether given username is unique.
+    If not unique or not given, tries to derive a new username that is.
+    """
+    exists = lambda n: User.objects.filter(username=n).exists()
+    if current and not exists(current):
+        return current
+    prefix, suffix = match(r'^(.+?)(\d*)$', current or 'user').groups()
+    suffix = int(suffix or 0) + 1
+    current = prefix + str(suffix)
+    while exists(current):
+        suffix += 1
+        current = prefix + str(suffix)
+    return current
