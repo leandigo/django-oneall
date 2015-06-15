@@ -1,0 +1,10 @@
+<!-- The plugin will be embedded into this div //-->
+<div id="{{oneall_social_login_container_id}}"></div>
+<script type="text/javascript">
+    var _oneall = _oneall || [];
+    _oneall.push(['social_login', 'set_callback_uri', window.location.href]);
+    {% for key, value in oneall_settings.items %}
+    _oneall.push(['social_login', 'set_{{key}}', {{value}}]);
+    {% endfor %}
+    _oneall.push(['social_login', 'do_render_ui', '{{oneall_social_login_container_id}}']);
+</script>

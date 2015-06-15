@@ -13,13 +13,16 @@
 </head>
 <body>
 
+<h1>Login</h1>
+
 {% if login_failed %}
-<div id="login_failed"> Login failed! Please try again. </div>
+<div id="login_failed"> Login failed! Please try again.</div>
 {% endif %}
+
+<h2>Social</h2>
 
 <!-- The plugin will be embedded into this div //-->
 <div id="oa_social_login_container"></div>
-
 <script type="text/javascript">
     var _oneall = _oneall || [];
     _oneall.push(['social_login', 'set_callback_uri', window.location.href]);
@@ -28,5 +31,12 @@
     {% endfor %}
     _oneall.push(['social_login', 'do_render_ui', 'oa_social_login_container']);
 </script>
+
+<form method="post">
+    <h2>Password</h2>
+    {{form}}
+    <input type="submit">
+</form>
+
 </body>
 </html>

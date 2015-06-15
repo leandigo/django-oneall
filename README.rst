@@ -1,7 +1,7 @@
 python3-oneall
 ==============
 
-Authentication with 20+ social networks using OneAll_, with Django_ support.
+Authentication with 30+ social networks using OneAll_, with Django_ support.
 
 This is a fork of `leandigo/django-oneall`_ with the following changes:
 
