@@ -1,19 +1,26 @@
 # -*- coding: utf-8 -*-
-from json import dumps
 from logging import getLogger
 
 from django.conf import settings
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, render
-from django.utils.safestring import mark_safe
-from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login, logout, views
+from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse
+from django.http.response import HttpResponseRedirectBase
+from django.shortcuts import render, resolve_url
+from django.views.decorators.csrf import csrf_exempt
 
+from .forms import LoginForm
 from .models import User, OneAllUserIdentity
 
 log = getLogger(__name__)
-default_settings = {'providers': 'google facebook twitter openid'.split()}
+
+
+class HttpResponseSeeOther(HttpResponseRedirectBase):
+    status_code = 303
+
+
+def redirect(to, *args, **kwargs):
+    return HttpResponseSeeOther(resolve_url(to, *args, **kwargs))
 
 
 @csrf_exempt
@@ -21,24 +28,20 @@ def oa_login(request: HttpRequest) -> HttpResponse:
     """
     Display and callback view for OneAll Authentication.
     """
-    oa_settings = dict(default_settings)
-    if hasattr(settings, 'ONEALL_LOGIN_WIDGET'):
-        oa_settings.update(settings.ONEALL_LOGIN_WIDGET)
-    for key, value in oa_settings.items():
-        oa_settings[key] = mark_safe(dumps(value))
     context = {
-        'oa_site_name': settings.ONEALL_SITE_NAME,
         'login_failed': False,
-        'oneall_settings': oa_settings,
+        'form': LoginForm(),
     }
     if request.method == 'POST':
-        connection_token = request.POST['connection_token']
-        user = authenticate(token=connection_token)
+        user = None
+        if 'connection_token' in request.POST:
+            connection_token = request.POST['connection_token']
+            user = authenticate(token=connection_token)
+        elif 'username' in request.POST:
+            user = authenticate(**request.POST)
         if user:
             login(request, user)
-            response = redirect(request.GET.get('next') or settings.LOGIN_REDIRECT_URL)
-            response.status_code = 303  # See Other
-            return response
+            return redirect(request.GET.get('next') or settings.LOGIN_REDIRECT_URL)
         else:
             context['login_failed'] = True
     return render(request, 'oneall/login.html', context)
@@ -51,9 +54,7 @@ def oa_logout(request: HttpRequest) -> HttpResponse:
     logout(request)
     url = request.GET.get('next')
     if url:
-        response = redirect(url)
-        response.status_code = 303  # See Other
-        return response
+        return redirect(url)
     else:
         return render(request, 'oneall/logout.html')
 

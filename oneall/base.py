@@ -5,7 +5,7 @@ class OAList(list):
     """
     A List of representing a JSON array with nested objects.
     """
-    each = None  # TODO: Discover what this is for.
+    each = None  # This is overriden in derived classes.
 
     def __init__(self, init_list=None):
         """
