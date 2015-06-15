@@ -57,7 +57,7 @@ class OneAllUserIdentity(models.Model):
             self.save()
 
     class Meta:
-        db_table = getattr(settings, 'ONEALL_CACHE_TABLE', 'oneall_cache')
+        db_table = 'oneall_cache'
 
 
 def _find_unique_username(current: str):
