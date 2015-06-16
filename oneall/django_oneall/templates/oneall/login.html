@@ -11,14 +11,18 @@
 <h1>Login</h1>
 
 {% if login_failed %}
-<div id="login_failed"> Login failed! Please try again.</div>
+<div id="login_failed">Login failed!</div>
+{% endif %}
+
+{% if logged_out %}
+<div id="logged_out">Logged out!</div>
 {% endif %}
 
 <h2>Social</h2>
 
 {% oneall_social_login %}
 
-<form method="post">
+<form method="post" action="{% url 'oneall-login' %}">
     <h2>Password</h2>
     {{form.as_p}}
     <input type="submit">

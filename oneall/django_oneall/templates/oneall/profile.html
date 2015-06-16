@@ -7,17 +7,14 @@
     {% oneall_header %}
 </head>
 <body>
-    <h1>Welcome</h1>
-    <ul>
-        <li>User: {{user.id}} {{identity.user_token}}</li>
-        <li>Add more social networks:</li>
-        <ul>
-            {% oneall_social_login user %}
-        </ul>
-        <li><a href="/">Go home</a></li>
-        {{form.as_li}}
-        <li><input type="submit" /></li>
-        <li><a href="{% url 'oneall-logout' %}">Logout</a></li>
-    </ul>
+<h1>Welcome</h1>
+<ul>
+    <li>User: {{user.id}} {{identity.user_token}}</li>
+    <li>Add more social networks:<br/>{% oneall_social_login user %}</li>
+    <li><a href="/">Go home</a></li>
+    {{form.as_li}}
+    <li><input type="submit"/></li>
+    <li><a href="{% url 'oneall-logout' %}">Logout</a></li>
+</ul>
 </body>
 </html>

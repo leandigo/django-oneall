@@ -9,7 +9,7 @@ from django.http.response import HttpResponseRedirectBase
 from django.shortcuts import render, resolve_url
 from django.views.decorators.csrf import csrf_exempt
 
-from .forms import LoginForm
+from .forms import LoginForm, UserProfileForm
 from .models import SocialUserCache
 
 log = getLogger(__name__)
@@ -24,14 +24,13 @@ def redirect(to, *args, **kwargs):
 
 
 @csrf_exempt
-def oa_login(request: HttpRequest) -> HttpResponse:
-    """
-    Display and callback view for OneAll Authentication.
-    """
+def oa_login(request: HttpRequest, noise='') -> HttpResponse:
+    """ Display and callback view for OneAll Authentication. """
     if request.user and request.user.is_authenticated():
         return redirect('oneall-profile')
     context = {
         'login_failed': False,
+        'logged_out': 'logout' in noise,
         'form': LoginForm(),
     }
     if request.method == 'POST':
@@ -45,24 +44,21 @@ def oa_login(request: HttpRequest) -> HttpResponse:
 
 
 def oa_logout(request: HttpRequest) -> HttpResponse:
-    """
-    Logs out the user and takes them somewhere if requested.
-    """
+    """ Logs out the user and then takes them somewhere else. """
     logout(request)
     url = request.GET.get('next')
     if url:
         return redirect(url)
     else:
-        return render(request, 'oneall/logout.html')
+        return redirect('oneall-login', '_from_logout')
 
 
 @login_required
 def oa_profile(request: HttpRequest) -> HttpResponse:
-    """
-    View to display logged in user profile along with their OneAll identity.
-    """
+    """ Displays current user profile, allows updates and social linkings. """
     context = {
         'user': request.user,
         'identity': SocialUserCache.objects.filter(user=request.user).first(),
+        'form': UserProfileForm(request.POST or None),
     }
     return render(request, 'oneall/profile.html', context)

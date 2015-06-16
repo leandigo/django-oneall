@@ -42,13 +42,19 @@ def oneall_social_login(user=None, **kwargs):
             default_widget_settings.update(settings.ONEALL_LOGIN_WIDGET)
         for key, value in default_widget_settings.items():
             default_widget_settings[key] = mark_safe(dumps(value))
+    if isinstance(user, User):
+        social_user = SocialUserCache.objects.filter(user=user).first()
+        if social_user:
+            kwargs['user_token'] = str(social_user.user_token)
+        else:
+            user = None  # no cached social user, thus revert to social login mode
     if kwargs:
         widget_settings = dict(default_widget_settings)
-        if isinstance(user, User):
-            oaid = SocialUserCache.objects.filter(user=user).first()
-            kwargs['user_token'] = str(oaid.user_token)
         for key, value in kwargs.items():
             widget_settings[key] = mark_safe(dumps(value))
     else:
         widget_settings = default_widget_settings
-    return {'oneall_settings': widget_settings}
+    return {
+        'settings': widget_settings,
+        'mode': 'social_link' if user else 'social_login',
+    }
