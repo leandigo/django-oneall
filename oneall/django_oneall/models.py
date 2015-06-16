@@ -3,7 +3,6 @@ from re import match
 
 from django.contrib.auth.models import User
 from django.db import models
-from django.conf import settings
 
 from ..base import OADict
 
@@ -13,9 +12,9 @@ class OneAllUserIdentity(models.Model):
     OneAll User Identity Model
     Caches raw JSON corresponding with user's social identity allow instant retrieval of user details.
     """
-    user_token = models.CharField(max_length=36, primary_key=True)
-    raw = models.CharField(max_length=8192, default='{}')
-    user = models.OneToOneField(User, related_name="identity", null=True)
+    user_token = models.UUIDField(max_length=36, primary_key=True)
+    raw = models.TextField(default='{}')
+    user = models.ForeignKey(User, null=True)
 
     def __init__(self, *args, **kwargs):
         """
