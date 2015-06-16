@@ -7,7 +7,7 @@ from django.db import models
 from ..base import OADict
 
 
-class OneAllUserIdentity(models.Model):
+class SocialUserCache(models.Model):
     """
     OneAll User Identity Model
     Caches raw JSON corresponding with user's social identity allow instant retrieval of user details.
@@ -54,9 +54,6 @@ class OneAllUserIdentity(models.Model):
         if not self.user:
             self.user = user
             self.save()
-
-    class Meta:
-        db_table = 'oneall_cache'
 
 
 def _find_unique_username(current: str):

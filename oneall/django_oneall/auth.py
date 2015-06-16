@@ -2,7 +2,7 @@
 from django.conf import settings
 
 from ..connection import OneAll
-from .models import User, OneAllUserIdentity
+from .models import User, SocialUserCache
 
 
 # The worker to be used for authentication
@@ -25,12 +25,12 @@ class OneAllAuthBackend(object):
 
         # Check if user exists and create one if not
         try:
-            identity = OneAllUserIdentity.objects.get(user_token=oa_user.user_token)
+            identity = SocialUserCache.objects.get(user_token=oa_user.user_token)
             if getattr(settings, 'ONEALL_REFRESH_CACHE_ON_AUTH', True):
                 identity.refresh(raw=oa_user.identity)
                 identity.update_user_cache()
-        except OneAllUserIdentity.DoesNotExist:
-            identity = OneAllUserIdentity(user_token=oa_user.user_token, raw=str(oa_user.identity))
+        except SocialUserCache.DoesNotExist:
+            identity = SocialUserCache(user_token=oa_user.user_token, raw=str(oa_user.identity))
             identity.update_user_cache()
 
         # Return authenticated user

@@ -5,7 +5,7 @@ from django.conf import settings
 from django.template import Library
 from django.utils.safestring import mark_safe
 
-from ..models import User, OneAllUserIdentity
+from ..models import User, SocialUserCache
 
 register = Library()
 
@@ -45,7 +45,7 @@ def oneall_social_login(user=None, **kwargs):
     if kwargs:
         widget_settings = dict(default_widget_settings)
         if isinstance(user, User):
-            oaid = OneAllUserIdentity.objects.filter(user=user).first()
+            oaid = SocialUserCache.objects.filter(user=user).first()
             kwargs['user_token'] = str(oaid.user_token)
         for key, value in kwargs.items():
             widget_settings[key] = mark_safe(dumps(value))

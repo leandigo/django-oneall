@@ -2,8 +2,7 @@
 from logging import getLogger
 
 from django.conf import settings
-from django.contrib.auth import authenticate, login, logout, views
-from django.contrib.auth.backends import ModelBackend
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse
 from django.http.response import HttpResponseRedirectBase
@@ -11,7 +10,7 @@ from django.shortcuts import render, resolve_url
 from django.views.decorators.csrf import csrf_exempt
 
 from .forms import LoginForm
-from .models import User, OneAllUserIdentity
+from .models import SocialUserCache
 
 log = getLogger(__name__)
 
@@ -64,6 +63,6 @@ def oa_profile(request: HttpRequest) -> HttpResponse:
     """
     context = {
         'user': request.user,
-        'identity': OneAllUserIdentity.objects.filter(user=request.user).first(),
+        'identity': SocialUserCache.objects.filter(user=request.user).first(),
     }
     return render(request, 'oneall/profile.html', context)
