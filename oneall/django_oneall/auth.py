@@ -14,13 +14,14 @@ class OneAllAuthBackend(object):
     OneAll Authentication Backend.
     """
 
-    def authenticate(self, token):
+    @classmethod
+    def authenticate(cls, connection_token, **_):
         """
         Performs authentication using a connection token. Creates and updates User and OneAllUserIdentity
         if necessary.
-        :param str token: OneAll connection token
+        :param str connection_token: OneAll connection token
         """
-        oa_user = oneall.connection(token).user
+        oa_user = oneall.connection(connection_token).user
 
         # Check if user exists and create one if not
         try:
@@ -35,7 +36,8 @@ class OneAllAuthBackend(object):
         # Return authenticated user
         return identity.user
 
-    def get_user(self, user_id):
+    @classmethod
+    def get_user(cls, user_id):
         """
         Retrieve user by user ID
         :param user_id: User ID

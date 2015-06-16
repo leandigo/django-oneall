@@ -3,13 +3,20 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title>Profile</title>
+    {% load oneall %}
+    {% oneall_header %}
 </head>
 <body>
     <h1>Welcome</h1>
     <ul>
-        <li>Username: {{user}}</li>
-        <li>OneAll User Identity: {{identity}}</li>
+        <li>User: {{user.id}} {{identity.user_token}}</li>
+        <li>Add more social networks:</li>
+        <ul>
+            {% oneall_social_login user %}
+        </ul>
         <li><a href="/">Go home</a></li>
+        {{form.as_li}}
+        <li><input type="submit" /></li>
         <li><a href="{% url 'oneall-logout' %}">Logout</a></li>
     </ul>
 </body>
