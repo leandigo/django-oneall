@@ -18,14 +18,22 @@
 <div id="logged_out">Logged out!</div>
 {% endif %}
 
-<h2>Social</h2>
+<h2>Social Login</h2>
 
 {% oneall_social_login %}
 
 <form method="post" action="{% url 'oneall-login' %}">
-    <h2>Password</h2>
-    {{form.as_p}}
-    <input type="submit">
+    <h2>Password Login</h2>
+    {{login_form.as_p}}
+    <input type="submit"/>
+</form>
+
+<form method="post" action="{% url 'oneall-login' %}">{% csrf_token %}
+    <h2>Create Password Account</h2>
+
+    <p>Enter your email to begin</p>
+    {{register_form.as_p}}
+    <input type="submit"/>
 </form>
 
 </body>

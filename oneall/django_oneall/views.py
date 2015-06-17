@@ -9,7 +9,7 @@ from django.http.response import HttpResponseRedirectBase
 from django.shortcuts import render, resolve_url
 from django.views.decorators.csrf import csrf_exempt
 
-from .forms import LoginForm, UserProfileForm
+from .forms import LoginForm, RegisterForm, UserProfileForm
 from .models import SocialUserCache
 
 log = getLogger(__name__)
@@ -31,7 +31,8 @@ def oa_login(request: HttpRequest, noise='') -> HttpResponse:
     context = {
         'login_failed': False,
         'logged_out': 'logout' in noise,
-        'form': LoginForm(),
+        'login_form': LoginForm(),
+        'register_form': RegisterForm(),
     }
     if request.method == 'POST':
         user = authenticate(**dict(request.POST.items()))
