@@ -9,6 +9,7 @@ from django.http.response import HttpResponseRedirectBase
 from django.shortcuts import render, resolve_url
 from django.views.decorators.csrf import csrf_exempt
 
+from .auth import OneAllAuthBackend
 from .forms import LoginForm, RegisterForm, UserProfileForm
 from .models import SocialUserCache
 
@@ -62,4 +63,7 @@ def oa_profile(request: HttpRequest) -> HttpResponse:
         'identity': SocialUserCache.objects.filter(user=request.user).first(),
         'form': UserProfileForm(request.POST or None),
     }
+    if request.POST:
+        if 'connection_token' in request.POST:
+            OneAllAuthBackend(request.user).authenticate(**request.POST)
     return render(request, 'oneall/profile.html', context)
