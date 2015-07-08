@@ -1,19 +1,28 @@
 # -*- coding: utf-8 -*-
+from datetime import timedelta
+
 from django.conf import settings
 from django.contrib.auth.backends import ModelBackend
+from django.core.signing import TimestampSigner
 
 from ..connection import OneAll
-from .models import User, SocialUserCache
-
+from .models import SocialUserCache, produce_user_from_email
 
 # The worker to be used for authentication
 oneall = OneAll(settings.ONEALL_SITE_NAME, settings.ONEALL_PUBLIC_KEY, settings.ONEALL_PRIVATE_KEY)
 
 
-class OneAllAuthBackend(object):
-    """
-    OneAll Authentication Backend.
-    """
+class BaseBackend(object):
+    @classmethod
+    def get_user(cls, user_id):
+        """
+        Retrieve user by user ID
+        :param user_id: User ID
+        """
+        return ModelBackend().get_user(user_id)
+
+
+class OneAllAuthBackend(BaseBackend):
     def __init__(self, existing_user=None):
         self.user = existing_user
 
@@ -41,10 +50,24 @@ class OneAllAuthBackend(object):
         # Return authenticated user
         return identity.user
 
-    @classmethod
-    def get_user(cls, user_id):
-        """
-        Retrieve user by user ID
-        :param user_id: User ID
-        """
-        return ModelBackend().get_user(user_id)
+
+class EmailTokenAuthBackend(BaseBackend):
+    KEY = 'etk'
+    _signer = None
+
+    @property
+    def signer(self) -> TimestampSigner:
+        if not EmailTokenAuthBackend._signer:
+            EmailTokenAuthBackend._signer = TimestampSigner()
+        return EmailTokenAuthBackend._signer
+
+    def issue(self, email):
+        return {self.KEY: self.signer.sign(email)}
+
+    def authenticate(self, **kwargs):
+        if self.KEY in kwargs:
+            token = kwargs[self.KEY]
+            # The next line of code can raise BadSignature and SignatureExpired.
+            # This will stop the authentication on its tracks and it will not keep trying on other backends.
+            email = self.signer.unsign(token, max_age=timedelta(hours=3))
+            return produce_user_from_email(email)

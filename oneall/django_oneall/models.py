@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from re import match
+from re import match, sub
 
 from django.contrib.auth.models import User
 from django.db import models
@@ -12,7 +12,7 @@ class SocialUserCache(models.Model):
     OneAll User Identity Model
     Caches raw JSON corresponding with user's social identity allow instant retrieval of user details.
     """
-    user_token = models.UUIDField(max_length=36, primary_key=True)
+    user_token = models.UUIDField(primary_key=True)
     raw = models.TextField(default='{}')
     user = models.ForeignKey(User, null=True)
 
@@ -41,19 +41,31 @@ class SocialUserCache(models.Model):
         """
         Update selected fields in the User model from social identity
         """
-        user = self.user or User()
-        if not user.email and 'emails' in self.__dict__ and self.emails:
-            user.email = self.emails[0].value
-        if not user.first_name and 'name' in self.__dict__ and 'givenName' in self.name:
-            user.first_name = self.name.givenName
-        if not user.last_name and 'name' in self.__dict__ and 'familyName' in self.name:
-            user.last_name = self.name.familyName
-        if not user.username:
-            user.username = _find_unique_username(self.preferredUsername)
-        user.save()
+        if 'emails' in self.__dict__ and self.emails:
+            email = self.emails[0].value
+            if not self.user:
+                self.user = User.objects.filter(email=email).first() or User(email=email)
+            else:
+                self.user.email = email
         if not self.user:
-            self.user = user
-            self.save()
+            self.user = User()
+        if 'name' in self.__dict__ and 'givenName' in self.name:
+            self.user.first_name = self.name.givenName
+        if 'name' in self.__dict__ and 'familyName' in self.name:
+            self.user.last_name = self.name.familyName
+        if not self.user.username:
+            self.user.username = _find_unique_username(self.preferredUsername)
+        self.user.save()
+        self.save()
+
+
+def produce_user_from_email(email):
+    user = User.objects.filter(email=email).first()
+    if not user:
+        preferred_username = sub(r'@.*$', '', email)
+        user = User(email=email, username=_find_unique_username(preferred_username))
+        user.save()
+    return user
 
 
 def _find_unique_username(current: str):
