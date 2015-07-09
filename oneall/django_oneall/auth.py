@@ -1,18 +1,24 @@
 # -*- coding: utf-8 -*-
-from datetime import timedelta
+from base64 import urlsafe_b64decode, urlsafe_b64encode
+from logging import getLogger
+from uuid import UUID
 
 from django.conf import settings
 from django.contrib.auth.backends import ModelBackend
-from django.core.signing import TimestampSigner
 
 from ..connection import OneAll
-from .models import SocialUserCache, produce_user_from_email
+from .models import SocialUserCache, EmailLoginToken
+
+log = getLogger(__name__)
 
 # The worker to be used for authentication
 oneall = OneAll(settings.ONEALL_SITE_NAME, settings.ONEALL_PUBLIC_KEY, settings.ONEALL_PRIVATE_KEY)
 
 
 class BaseBackend(object):
+    def __init__(self, existing_user=None):
+        self.user = existing_user
+
     @classmethod
     def get_user(cls, user_id):
         """
@@ -23,8 +29,7 @@ class BaseBackend(object):
 
 
 class OneAllAuthBackend(BaseBackend):
-    def __init__(self, existing_user=None):
-        self.user = existing_user
+    KEY = 'connection_token'
 
     def authenticate(self, connection_token, **_):
         """
@@ -53,21 +58,22 @@ class OneAllAuthBackend(BaseBackend):
 
 class EmailTokenAuthBackend(BaseBackend):
     KEY = 'etk'
-    _signer = None
-
-    @property
-    def signer(self) -> TimestampSigner:
-        if not EmailTokenAuthBackend._signer:
-            EmailTokenAuthBackend._signer = TimestampSigner()
-        return EmailTokenAuthBackend._signer
 
     def issue(self, email):
-        return {self.KEY: self.signer.sign(email)}
+        return {self.KEY: urlsafe_b64encode(EmailLoginToken.issue(email).token.bytes)[:-2]}
 
     def authenticate(self, **kwargs):
         if self.KEY in kwargs:
-            token = kwargs[self.KEY]
-            # The next line of code can raise BadSignature and SignatureExpired.
-            # This will stop the authentication on its tracks and it will not keep trying on other backends.
-            email = self.signer.unsign(token, max_age=timedelta(hours=3))
-            return produce_user_from_email(email)
+            token = UUID(bytes=urlsafe_b64decode(kwargs[self.KEY].encode('ascii') + b'=='))
+            try:
+                login = EmailLoginToken.consume(token)
+            except EmailLoginToken.DoesNotExist:
+                return None
+            if not self.user:
+                return login.produce_user()
+            else:
+                # this was an email change request!
+                # TODO: check for existing users bearing the same address. can a merge happen? if not, what can?
+                self.user.email = login.email
+                self.user.save()
+                return self.user

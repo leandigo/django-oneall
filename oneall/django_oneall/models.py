@@ -1,8 +1,13 @@
 # -*- coding: utf-8 -*-
 from re import match, sub
+from uuid import uuid4
+from datetime import timedelta
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.transaction import atomic
+from django.utils.timezone import now
 
 from ..base import OADict
 
@@ -59,13 +64,42 @@ class SocialUserCache(models.Model):
         self.save()
 
 
-def produce_user_from_email(email):
-    user = User.objects.filter(email=email).first()
-    if not user:
-        preferred_username = sub(r'@.*$', '', email)
-        user = User(email=email, username=_find_unique_username(preferred_username))
-        user.save()
-    return user
+class EmailLoginToken(models.Model):
+    token = models.UUIDField(primary_key=True, default=uuid4)
+    email = models.EmailField(unique=True)
+    created = models.DateTimeField(auto_now=True)
+
+    EXPIRATION = getattr(settings, 'EMAIL_LOGIN_EXPIRATION', timedelta(hours=3))
+
+    @classmethod
+    @atomic
+    def issue(cls, email):
+        cls._expire()
+        cls.objects.filter(email=email).delete()
+        login = cls(email=email)
+        login.save()
+        return login
+
+    @classmethod
+    @atomic
+    def consume(cls, token):
+        cls._expire()
+        login = cls.objects.get(token=token)
+        login.delete()
+        return login  # Despite being removed from the db, we're still going to use this object for a bit longer.
+
+    def produce_user(self):
+        user = User.objects.filter(email=self.email).first()
+        if not user:
+            preferred_username = sub(r'@.*$', '', str(self.email))
+            user = User(email=self.email, username=_find_unique_username(preferred_username))
+            user.save()
+        return user
+
+    @classmethod
+    @atomic
+    def _expire(cls):
+        cls.objects.filter(created__lt=now() - cls.EXPIRATION).delete()
 
 
 def _find_unique_username(current: str):

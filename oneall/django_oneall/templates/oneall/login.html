@@ -23,17 +23,14 @@
 {% oneall_social_login %}
 
 <form method="post" action="{% url 'oneall-login' %}">
-    <h2>Password Login</h2>
-    {{login_form.as_p}}
+    {% csrf_token %}
+    <h2>Email Login</h2>
+    {% if check_your_mail %}
+    Check your e-mail for the login link.
+    {% else %}
+    {{email_form.as_p}}
     <input type="submit"/>
-</form>
-
-<form method="post" action="{% url 'oneall-login' %}">{% csrf_token %}
-    <h2>Create Password Account</h2>
-
-    <p>Enter your email to begin</p>
-    {{register_form.as_p}}
-    <input type="submit"/>
+    {% endif %}
 </form>
 
 </body>
