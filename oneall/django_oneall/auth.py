@@ -5,6 +5,7 @@ from uuid import UUID
 
 from django.conf import settings
 from django.contrib.auth.backends import ModelBackend
+from django.utils.http import urlencode
 
 from ..connection import OneAll
 from .models import SocialUserCache, EmailLoginToken
@@ -58,9 +59,11 @@ class OneAllAuthBackend(BaseBackend):
 
 class EmailTokenAuthBackend(BaseBackend):
     KEY = 'etk'
+    login = None
 
     def issue(self, email):
-        return {self.KEY: urlsafe_b64encode(EmailLoginToken.issue(email).token.bytes)[:-2]}
+        self.login = EmailLoginToken.issue(email)
+        return urlencode({self.KEY: urlsafe_b64encode(self.login.token.bytes)[:-2]})
 
     def authenticate(self, **kwargs):
         if self.KEY in kwargs:

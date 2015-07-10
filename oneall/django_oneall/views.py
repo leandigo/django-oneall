@@ -12,7 +12,6 @@ from django.http import HttpRequest, HttpResponse
 from django.http.response import HttpResponseRedirectBase
 from django.middleware.csrf import CsrfViewMiddleware
 from django.shortcuts import render, resolve_url
-from django.utils.http import urlencode
 from django.utils.translation import ugettext_lazy as _t, ugettext as _tt
 from django.views.decorators.csrf import csrf_exempt
 
@@ -64,7 +63,7 @@ def oa_login(request: HttpRequest, noise='') -> HttpResponse:
 
 
 def mail_login_token(request, email, args):
-    relative_uri = '%s?%s' % (reverse('oneall-login'), urlencode(args))
+    relative_uri = '%s?%s' % (reverse('oneall-login'), args)
     message = EmailMessage()
     message.subject = _t("Login")
     message.to = [email]
