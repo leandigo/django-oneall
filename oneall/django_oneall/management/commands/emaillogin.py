@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from smtplib import SMTPResponseException
+
 from django.core.mail import EmailMessage
 from django.core.management.base import BaseCommand
 from django.core.urlresolvers import reverse
@@ -29,5 +31,7 @@ class Command(BaseCommand):
             try:
                 sent = mail.send()
                 self.stdout.write("Sent %d message." % sent)
-            except ConnectionError as e:
-                self.stderr.write(str(e))
+            except SMTPResponseException as e:
+                self.stderr.write("SMTP %d %s" % (e.smtp_code, e.smtp_error.decode('latin9')))
+            except OSError as e:
+                self.stderr.write("Conn %s" % e)
