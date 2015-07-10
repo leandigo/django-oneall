@@ -3,7 +3,7 @@ from uuid import UUID
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from django.db import models, OperationalError
+from django.db import models, OperationalError, connection
 
 from ...models import SocialUserCache
 
@@ -37,3 +37,9 @@ class Command(BaseCommand):
                 cbad += 1
                 self.stderr.write("Invalid UUID <%s>", oldrow.user_token)
         self.stdout.write("Done. %d ok, %d failed." % (cok, cbad))
+        if cbad:
+            self.stdout.write("Import complete with errors. Keeping legacy table.")
+        else:
+            self.stdout.write("Import complete without errors. Deleting legacy table.")
+            with connection.schema_editor() as schema_editor:
+                schema_editor.delete_model(self.LegacyOneAllCache)
