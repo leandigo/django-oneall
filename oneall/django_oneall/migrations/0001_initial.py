@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+import uuid
 from django.conf import settings
 
 
@@ -13,14 +14,19 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='OneAllUserIdentity',
+            name='SocialUserCache',
             fields=[
-                ('user_token', models.CharField(primary_key=True, max_length=36, serialize=False)),
-                ('raw', models.CharField(default='{}', max_length=8192)),
-                ('user', models.OneToOneField(related_name='identity', null=True, to=settings.AUTH_USER_MODEL)),
+                ('user_token', models.UUIDField(serialize=False, primary_key=True)),
+                ('raw', models.TextField(default='{}')),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL, null=True)),
             ],
-            options={
-                'db_table': 'oneall_cache',
-            },
+        ),
+        migrations.CreateModel(
+            name='EmailLoginToken',
+            fields=[
+                ('token', models.UUIDField(serialize=False, default=uuid.uuid4, primary_key=True)),
+                ('email', models.EmailField(max_length=254, unique=True)),
+                ('created', models.DateTimeField(auto_now=True)),
+            ],
         ),
     ]
