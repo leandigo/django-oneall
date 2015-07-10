@@ -18,16 +18,16 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.AlterField(
+            model_name='onealluseridentity',
+            name='user',
+            field=models.ForeignKey(to=settings.AUTH_USER_MODEL, null=True),
+        ),
         migrations.RunPython(remove_dashes_from_tokens),
         migrations.AlterField(
             model_name='onealluseridentity',
             name='user_token',
             field=models.UUIDField(primary_key=True, serialize=False),
-        ),
-        migrations.AlterField(
-            model_name='onealluseridentity',
-            name='user',
-            field=models.ForeignKey(to=settings.AUTH_USER_MODEL, null=True),
         ),
         migrations.AlterField(
             model_name='onealluseridentity',
