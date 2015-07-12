@@ -85,6 +85,7 @@ def oa_logout(request: HttpRequest) -> HttpResponse:
 
 
 @login_required
+@csrf_exempt
 def oa_profile(request: HttpRequest) -> HttpResponse:
     """ Displays current user profile, allows updates and social linkings. """
     context = {
@@ -95,6 +96,7 @@ def oa_profile(request: HttpRequest) -> HttpResponse:
     if 'connection_token' in request.POST:
         OneAllAuthBackend(request.user).authenticate(**request.POST)
     elif 'email' in request.POST and request.user.email != request.POST['email']:
+        csrf_check(request)
         EmailTokenAuthBackend(request.user).issue(request.POST['email'])
     return render(request, 'oneall/profile.html', context)
 
