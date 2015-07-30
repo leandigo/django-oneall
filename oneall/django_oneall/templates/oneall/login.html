@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Login</title>
+    {% load oneall %}
+    {% oneall_header %}
+</head>
+<body>
+
+<h1>Login</h1>
+
+{% if login_failed %}
+<div id="login_failed">Login failed!</div>
+{% endif %}
+
+{% if logged_out %}
+<div id="logged_out">Logged out!</div>
+{% endif %}
+
+<h2>Social Login</h2>
+
+{% oneall_social_login %}
+
+<form method="post" action="{% url 'oneall-login' %}">
+    {% csrf_token %}
+    <h2>Email Login</h2>
+    {% if check_your_mail %}
+    Check your e-mail for the login link.
+    {% else %}
+    {{email_form.as_p}}
+    <input type="submit"/>
+    {% endif %}
+</form>
+
+</body>
+</html>

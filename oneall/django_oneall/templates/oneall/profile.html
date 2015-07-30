@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Profile</title>
+    {% load oneall %}
+    {% oneall_header %}
+</head>
+<body>
+<h1>Welcome</h1>
+<ul>
+    <li>User: {{user.id}} {{identity.user_token}}</li>
+    <li>Add more social networks:<br/>{% oneall_social_login user %}</li>
+    <li>
+        {% if check_your_mail %}
+        Check your mail to complete the change.
+        {% else %}
+        {{form.as_p}}<input type="submit" />
+        {% endif %}
+    </li>
+    <li><a href="/">Go home</a></li>
+    <li><a href="{% url 'oneall-logout' %}">Logout</a></li>
+</ul>
+</body>
+</html>
