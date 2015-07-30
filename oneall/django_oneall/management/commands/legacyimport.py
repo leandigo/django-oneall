@@ -12,7 +12,7 @@ class Command(BaseCommand):
     help = "Loads OneAll data from a legacy table (oneall_cache table from django-oneall v0.1)."
 
     class LegacyOneAllCache(models.Model):
-        user_token = models.CharField(max_length=36)
+        user_token = models.CharField(max_length=36, primary_key=True)
         raw = models.CharField(max_length=8192)
         user = models.ForeignKey(to=settings.AUTH_USER_MODEL)
 
