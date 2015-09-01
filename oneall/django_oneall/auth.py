@@ -5,7 +5,7 @@ from uuid import UUID
 
 from django.conf import settings
 from django.contrib.auth.backends import ModelBackend
-from django.utils.http import urlencode
+from django.http import QueryDict
 
 from ..connection import OneAll
 from .models import SocialUserCache, EmailLoginToken
@@ -63,7 +63,9 @@ class EmailTokenAuthBackend(BaseBackend):
 
     def issue(self, email):
         self.login = EmailLoginToken.issue(email)
-        return urlencode({self.KEY: urlsafe_b64encode(self.login.token.bytes)[:-2]})
+        result = QueryDict(mutable=True)
+        result[self.KEY] = urlsafe_b64encode(self.login.token.bytes)[:-2]
+        return result
 
     def authenticate(self, **kwargs):
         if self.KEY in kwargs:
