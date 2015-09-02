@@ -1,36 +1,15 @@
-WARNING!
-========
-WARNING!!
----------
-WARNING!!!
-``````````
-
-**This is the Django documentation from before the fork.**
-
-**A LOT HAS CHANGED.**
-
-**Feel free to file a documentation ticket if you're frustrated.**
-**I'll come and fix it right then.**
-**Right now I'm still focusing on my changes.**
-
-
 django-oneall - Django Authentication support for OneAll
 ========================================================
 
-**OneAll** (|oneall|_) provides web-applications with a unified API for **20+ social networks**.
+**OneAll** (|oneall|_) provides web-applications with a unified API for **30+ social networks**.
 
 **django-oneall** is a Django app providing allowing user authentication and management through OneAll
-
-Disclaimer
-----------
-*This package is new, and so far has been tested in a development of a small number of projects.*
-*Please be sure to test all edge-cases where this package is used with your application!*
 
 Requirements
 ------------
 
-#. ``django>=1.4`` (Wasn't tested on earlier versions, but might work)
-#. ``pyoneall==0.1``
+#. ``django>=1.8`` (Wasn't tested on earlier versions, but might work)
+#. ``pyoneall==0.1.1``
 
 Implementation Overview
 -----------------------
@@ -56,9 +35,9 @@ Add this app to your project directory, or install via::
 
     pip install django_oneall
 
-
 Configuration
 `````````````
+
 ``settings.py``
 ^^^^^^^^^^^^^^^
 
@@ -70,64 +49,80 @@ Add ``django_oneall`` to ``INSTALLED_APPS``, make sure you have ``django.contrib
         'django_oneall',
     )
 
-Add the authentication backend::
+Add the authentication backends::
 
-    AUTHENTICATION_BACKENDS = ('django_oneall.auth.OneAllAuthBackend',)
+    AUTHENTICATION_BACKENDS = (
+        'django_oneall.auth.OneAllAuthBackend',
+        'django_oneall.auth.EmailTokenAuthBackend',  # Optional
+    )
 
-Configure OneAll connection::
+Configure OneAll connection, for example::
 
-    ONEALL_SITE_NAME = 'NAME OF YOUR ONEALL SITE'
-    ONEALL_PRIVATE_KEY = 'PRIVATE KEY OF YOUR SITE'
-    ONEALL_PUBLIC_KEY = 'PUBLIC KEY OF YOUR SITE'
-
-Configure behavior (these are good to go as they are here, so you can just copy-paste)::
-
-    # This setting lets you decide which identity data you want stored in the User model.
-    # The keys stand for the fields in the User model, while the values are the expressions that will be evaluated
-    # as attributes of the identity object as received from OneAll. There can be more than one identity expression,
-    # in case different authentication providers have different data structures.
-    # Note that the usernames will default to the user_token, which is a UUID. You can override it with any other
-    # unique identity information
-    ONEALL_CACHE_FIELDS = {
-        'username': ('user_token',),
-        'email': ('emails[0].value',),
-        'first_name': ('name.givenName',),
-        'last_name': ('name.familyName',),
+    ONEALL_SITE_NAME = 'py3tests'
+    ONEALL_PUBLIC_KEY = 'bf3a6a88-...'
+    ONEALL_PRIVATE_KEY = '35fc1a5e-...'
+    ONEALL_LOGIN_WIDGET = {
+        'providers': ['amazon', 'blogger', 'disqus', 'draugiem', 'facebook',
+                      'foursquare', 'github', 'google', 'instagram', 'linkedin',
+                      'livejournal', 'mailru', 'odnoklassniki', 'openid',
+                      'paypal', 'reddit', 'skyrock', 'stackexchange', 'steam',
+                      'twitch', 'twitter', 'vimeo', 'vkontakte', 'windowslive',
+                      'wordpress', 'yahoo', 'youtube'],
+        'grid_sizes': [7, 5],
     }
 
-    # User identity is always cached on first authentication. However, if you want to spare an API call for users
-    # who are already known to your Django app, you can disable the refresh of cache for the second time they
-    # connect and onward.
-    ONEALL_REFRESH_CACHE_ON_AUTH = True
-
-    # The OneAll cache table in the DB, where cached identities are stored
-    ONEALL_CACHE_TABLE = 'oneall_cache'
+If you plan to use E-mail Token authentication, you must also `configure your e-mail backend`_.
 
 ``urls.py``
 ^^^^^^^^^^^
-Add the following URL pattern to your ``urlpatterns`` tuple::
+Add the following URL pattern to your ``urlpatterns`` in your global ``urls.py``::
 
-    url(r'^oneall/', include('django_oneall.urls'))
+    url(r'^accounts/', include('django_oneall.urls')),
 
-This should enable you to use the callback view at ``/oneall/auth/``
+Using this Django App in ``/accounts/`` will work as a drop-in replacement to ``django.contrib.auth``.
+
+However, ``django.contrib.admin`` implements its own login screen, which conflicts with OneAll's.
+If you're using it, you need to override its login screen like so::
+
+    url(r'^admin/login', 'django_oneall.views.oa_login'),
+    url(r'^admin/', include('admin.site.urls')),
+
+Super User
+^^^^^^^^^^
+
+* You can promote an existing user to super user (OneAll Token, integer Django user ID, or user e-mail).
+* You can create a new user that's super right from the start, with their e-mail.
+
+Just run::
+
+    python manage.py setsuperuser [user]
+
+Whereas ``[user]`` can be either of the three.
+
+Beware that this command **will never send any e-mail**;
+it merely displays the e-mail login link to be manually pasted in your web browser.
+Should your end user be unavailable to complete login, don't worry, they have already been made super-user.
 
 Template
 ^^^^^^^^
-When embedding the body of the OneAll plugin inside your login template, set the ``callback_uri`` attribute to the URL
-of the OneAll callback view like so: ``http://example.com{% url oneall_auth %}``. The template might look like::
+Pages that implement OneAll widgets must include in their ``<head>``::
 
-    <script type="text/javascript">
-        oneall.api.plugins.social_login.build("social_login_container", {
-            'providers' :  ['facebook', 'google', 'linkedin', 'twitter', 'yahoo'],
-            'css_theme_uri': 'https://oneallcdn.com/css/api/socialize/themes/buildin/connect/large-v1.css',
-            'grid_size_x': '1',
-            'callback_uri': 'http://example.com{% url oneall_auth %}'
-        });
-    </script>
+    {% load oneall %}
+    {% oneall_header %}
+
+The login Widget can be included manually as instructed through the OneAll assistant, or, if you're feeling lazy::
+
+    {% oneall_social_login %}
+
+You can also pass an optional argument (it must be the Django ``User`` object) if you want social linking instead::
+
+    {% oneall_social_login current_user %}
 
 Notes and Stuff
 ---------------
-After configuring, ``python manage.py syncdb`` is **required**.
+After configuring, ``python manage.py migrate`` is **required**.
+
+If you're upgrading from ``django-oneall<1.0``, you must also run ``python manage.py legacyimport`` afterwards.
 
 Now users can authenticate and attain user privileges using their social accounts, without the need for you app to
 handle the registration.
@@ -143,12 +138,18 @@ social networks. ``vars(identity)`` will show you the user's information.
 
 You can create your own authentication views. ``django.contrib.auth.authenticate`` and ``django.contrib.auth.login``
 will work seamlessly with OneAll if you've added ``django_oneall.auth.OneAllAuthBackend`` to your
-``AUTHENTICATION_BACKENDS``. You can find docs on that at `Connection API Documentation`_, or take a look at the very
-simple code in ``views.py`` provided in this package.
+``AUTHENTICATION_BACKENDS``. You can find docs on that at `Connection API Documentation`_, or take a look at the
+code in ``views.py`` provided in this package.
+
+Roadmap
+-------
+
+- Internationalization.
+- Implement `OneAll Social Link`_.
 
 License
 -------
-Copyright (c) 2013, Leandigo (|leandigo|_)
+Copyright (c) 2013-2015, Leandigo (|leandigo|_) and Ekevoo_.
 
 Released under the MIT License. See the LICENSE file for details.
 
@@ -157,5 +158,8 @@ Released under the MIT License. See the LICENSE file for details.
 .. |onealldoc| replace:: http://docs.oneall.com
 .. _onealldoc: http://docs.oneall.com
 .. _Connection API Documentation: http://docs.oneall.com/api/resources/connections/
+.. _configure your e-mail backend: https://docs.djangoproject.com/en/1.8/ref/settings/#email-backend
+.. _OneAll Social Link: https://www.oneall.com/services/social-link/
 .. |leandigo| replace:: www.leandigo.com
 .. _leandigo: http://www.leandigo.com
+.. _Ekevoo: http://ekevoo.com
