@@ -1,11 +1,21 @@
 import os
-from distutils.core import setup
+
+from setuptools import setup, find_packages
 
 README = open(os.path.join(os.path.dirname(__file__), 'README.rst')).read()
 setup(
     name='django-oneall',
     version='0.1.4',
-    packages=['django_oneall'],
+    packages=find_packages(),
+    package_data={
+        'django_oneall/templates/oneall': [
+            'header.html', 
+            'login.html',
+            'profile.html',
+            'social_login.html'
+        ]
+    },
+    include_package_data=True,
     requires=['Django (>=1.8)'],
     install_requires=['pyoneall == 0.1.1'],
     license='MIT License, see LICENSE file',
