@@ -7,7 +7,7 @@ from django.conf import settings
 from django.contrib.auth.backends import ModelBackend
 from django.http import QueryDict
 
-from ..connection import OneAll
+from pyoneall.connection import OneAll
 from .models import SocialUserCache, EmailLoginToken
 
 log = getLogger(__name__)
