@@ -9,7 +9,7 @@ from django.db import models
 from django.db.transaction import atomic
 from django.utils.timezone import now
 
-from ..base import OADict
+from pyoneall.base import OADict
 
 
 class SocialUserCache(models.Model):
