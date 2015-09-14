@@ -1,6 +1,10 @@
 django-oneall - Django Authentication support for OneAll
 ========================================================
 
+.. image:: https://badges.gitter.im/Join%20Chat.svg
+   :alt: Join the chat at https://gitter.im/leandigo/django-oneall
+   :target: https://gitter.im/leandigo/django-oneall?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
+
 **OneAll** (|oneall|_) provides web-applications with a unified API for **20+ social networks**.
 
 **django-oneall** is a Django app providing allowing user authentication and management through OneAll
