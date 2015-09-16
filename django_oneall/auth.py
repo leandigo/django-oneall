@@ -3,17 +3,17 @@ from base64 import urlsafe_b64decode, urlsafe_b64encode
 from logging import getLogger
 from uuid import UUID
 
-from django.conf import settings
 from django.contrib.auth.backends import ModelBackend
 from django.http import QueryDict
+from pyoneall import OneAll
 
-from pyoneall.connection import OneAll
+from .app import settings
 from .models import SocialUserCache, EmailLoginToken
 
 log = getLogger(__name__)
 
 # The worker to be used for authentication
-oneall = OneAll(settings.ONEALL_SITE_NAME, settings.ONEALL_PUBLIC_KEY, settings.ONEALL_PRIVATE_KEY)
+oneall = OneAll(**settings.credentials)
 
 
 class BaseBackend(object):
@@ -43,7 +43,7 @@ class OneAllAuthBackend(BaseBackend):
         # Check if user exists and create one if not
         try:
             identity = SocialUserCache.objects.get(user_token=oa_user.user_token)
-            if getattr(settings, 'ONEALL_REFRESH_CACHE_ON_AUTH', True):
+            if settings.store_user_info:
                 identity.refresh(raw=oa_user.identity)
                 if self.user:
                     identity.user = self.user  # override any existing link.

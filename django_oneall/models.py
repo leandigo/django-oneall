@@ -3,13 +3,13 @@ from re import match, sub
 from uuid import uuid4
 from datetime import timedelta
 
-from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.transaction import atomic
 from django.utils.timezone import now
-
 from pyoneall.base import OADict
+
+from .app import settings
 
 
 class SocialUserCache(models.Model):
@@ -69,8 +69,6 @@ class EmailLoginToken(models.Model):
     email = models.EmailField(unique=True)
     created = models.DateTimeField(auto_now=True)
 
-    EXPIRATION = getattr(settings, 'EMAIL_LOGIN_EXPIRATION', timedelta(hours=3))
-
     @classmethod
     @atomic
     def issue(cls, email):
@@ -99,7 +97,7 @@ class EmailLoginToken(models.Model):
     @classmethod
     @atomic
     def _expire(cls):
-        cls.objects.filter(created__lt=now() - cls.EXPIRATION).delete()
+        cls.objects.filter(created__lt=now() - settings.token_expiration).delete()
 
 
 def _find_unique_username(current: str):
@@ -107,7 +105,10 @@ def _find_unique_username(current: str):
     Checks wether given username is unique.
     If not unique or not given, tries to derive a new username that is.
     """
-    exists = lambda n: User.objects.filter(username=n).exists()
+
+    def exists(n):
+        return User.objects.filter(username=n).exists()
+
     if current and not exists(current):
         return current
     prefix, suffix = match(r'^(.+?)(\d*)$', current or 'user').groups()

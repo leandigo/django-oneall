@@ -2,7 +2,6 @@
 from logging import getLogger
 from threading import Thread
 
-from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import SuspiciousOperation
@@ -15,6 +14,7 @@ from django.shortcuts import render, resolve_url
 from django.utils.translation import ugettext_lazy as _t, ugettext as _tt
 from django.views.decorators.csrf import csrf_exempt
 
+from .app import settings
 from .auth import OneAllAuthBackend, EmailTokenAuthBackend
 from .forms import EmailForm
 from .models import SocialUserCache
@@ -56,7 +56,7 @@ def oa_login(request: HttpRequest, noise='') -> HttpResponse:
         user = authenticate(**auth_with)
         if user:
             login(request, user)
-            return redirect(request.GET.get('next') or settings.LOGIN_REDIRECT_URL)
+            return redirect(request.GET.get('next') or settings.default_url)
         else:
             context['login_failed'] = True
     return render(request, 'oneall/login.html', context)

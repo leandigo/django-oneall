@@ -60,19 +60,26 @@ Add the authentication backends::
         'django_oneall.auth.EmailTokenAuthBackend',  # Optional
     )
 
-Configure OneAll connection, for example::
+Configure OneAll, for example::
 
-    ONEALL_SITE_NAME = 'py3tests'
-    ONEALL_PUBLIC_KEY = 'bf3a6a88-...'
-    ONEALL_PRIVATE_KEY = '35fc1a5e-...'
-    ONEALL_LOGIN_WIDGET = {
-        'providers': ['amazon', 'blogger', 'disqus', 'draugiem', 'facebook',
-                      'foursquare', 'github', 'google', 'instagram', 'linkedin',
-                      'livejournal', 'mailru', 'odnoklassniki', 'openid',
-                      'paypal', 'reddit', 'skyrock', 'stackexchange', 'steam',
-                      'twitch', 'twitter', 'vimeo', 'vkontakte', 'windowslive',
-                      'wordpress', 'yahoo', 'youtube'],
-        'grid_sizes': [7, 5],
+    ONEALL = {
+        'credentials': {
+            'site_name': 'mysite',
+            'public_key': '2d27cffd-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
+            'private_key': '84d94998-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
+        },
+        'login_widget': {
+            'providers': ['amazon', 'blogger', 'disqus', 'draugiem', 'facebook',
+                          'foursquare', 'github', 'google', 'instagram', 'linkedin',
+                          'livejournal', 'mailru', 'odnoklassniki', 'openid',
+                          'paypal', 'reddit', 'skyrock', 'stackexchange', 'steam',
+                          'twitch', 'twitter', 'vimeo', 'vkontakte', 'windowslive',
+                          'wordpress', 'yahoo', 'youtube'],
+            'grid_sizes': [7, 5],
+            # Any setting allowed in the login widget assistant can be put here.
+        },
+        'store_user_info': True,
+        'token_expiration_hours': 3,
     }
 
 If you plan to use E-mail Token authentication, you must also `configure your e-mail backend`_.
