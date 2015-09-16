@@ -17,8 +17,7 @@ setup(
         ]
     },
     include_package_data=True,
-    requires=['Django (>=1.8)'],
-    install_requires=['pyoneall == 0.1.1'],
+    install_requires=['pyoneall>=0.2', 'django>=1.8'],
     license='MIT License, see LICENSE file',
     description='Django Authentication support for OneAll. Provides unified authentication for 30+ social networks',
     long_description=README,
