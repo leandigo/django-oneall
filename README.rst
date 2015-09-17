@@ -53,7 +53,7 @@ Add ``django_oneall`` to ``INSTALLED_APPS``, make sure you have ``django.contrib
         'django_oneall',
     )
 
-Add the authentication backends::
+Add the Django authentication backends::
 
     AUTHENTICATION_BACKENDS = (
         'django_oneall.auth.OneAllAuthBackend',
@@ -82,7 +82,12 @@ Configure OneAll, for example::
         'token_expiration_hours': 3,
     }
 
+Credentials are mandatory. All other settings are optional.
+
 If you plan to use E-mail Token authentication, you must also `configure your e-mail backend`_.
+Here's a good setting for development::
+
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 ``urls.py``
 ^^^^^^^^^^^
@@ -92,11 +97,11 @@ Add the following URL pattern to your ``urlpatterns`` in your global ``urls.py``
 
 Using this Django App in ``/accounts/`` will work as a drop-in replacement to ``django.contrib.auth``.
 
-However, ``django.contrib.admin`` implements its own login screen, which conflicts with OneAll's.
-If you're using it, you need to override its login screen like so::
+However, if you're using ``django.contrib.admin``, it implements its own login screen, which conflicts with OneAll's.
+You then need to override its login screen like so::
 
     url(r'^admin/login', 'django_oneall.views.oa_login'),
-    url(r'^admin/', include('admin.site.urls')),
+    url(r'^admin/', include('django.contrib.admin.site.urls')),
 
 Super User
 ^^^^^^^^^^
