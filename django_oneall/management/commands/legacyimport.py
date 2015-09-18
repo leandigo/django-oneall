@@ -16,7 +16,7 @@ class Command(BaseCommand):
         raw = models.CharField(max_length=8192)
         user = models.ForeignKey(to=settings.AUTH_USER_MODEL)
 
-        class Meta:
+        class Meta(object):
             db_table = 'oneall_cache'
 
     def handle(self, *args, **options):

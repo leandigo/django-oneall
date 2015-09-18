@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from re import match, sub
 from uuid import uuid4
-from datetime import timedelta
 
 from django.contrib.auth.models import User
 from django.db import models
@@ -100,7 +99,7 @@ class EmailLoginToken(models.Model):
         cls.objects.filter(created__lt=now() - settings.token_expiration).delete()
 
 
-def _find_unique_username(current: str):
+def _find_unique_username(current):
     """
     Checks wether given username is unique.
     If not unique or not given, tries to derive a new username that is.

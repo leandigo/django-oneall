@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.test import TestCase
 
-from ..connection import OneAll
+from pyoneall import OneAll
 
 
 class TestOneAll(TestCase):

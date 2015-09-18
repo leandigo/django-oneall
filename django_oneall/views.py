@@ -7,7 +7,6 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import SuspiciousOperation
 from django.core.mail import EmailMessage
 from django.core.urlresolvers import reverse
-from django.http import HttpRequest, HttpResponse, QueryDict
 from django.http.response import HttpResponseRedirectBase
 from django.middleware.csrf import CsrfViewMiddleware
 from django.shortcuts import render, resolve_url
@@ -31,7 +30,7 @@ def redirect(to, *args, **kwargs):
 
 
 @csrf_exempt
-def oa_login(request: HttpRequest, noise='') -> HttpResponse:
+def oa_login(request, noise=''):
     """ Display and callback view for OneAll Authentication. """
     if request.user and request.user.is_authenticated():
         return redirect('oneall-profile')
@@ -62,7 +61,7 @@ def oa_login(request: HttpRequest, noise='') -> HttpResponse:
     return render(request, 'oneall/login.html', context)
 
 
-def mail_login_token(request: HttpRequest, email: str, args: QueryDict):
+def mail_login_token(request, email, args):
     args.setlist('next', request.GET.getlist('next'))
     relative_uri = '%s?%s' % (reverse('oneall-login'), args.urlencode())
     message = EmailMessage()
@@ -75,7 +74,7 @@ def mail_login_token(request: HttpRequest, email: str, args: QueryDict):
     Thread(target=message.send, args=(True,)).start()
 
 
-def oa_logout(request: HttpRequest) -> HttpResponse:
+def oa_logout(request):
     """ Logs out the user and then takes them somewhere else. """
     logout(request)
     url = request.GET.get('next')
@@ -87,7 +86,7 @@ def oa_logout(request: HttpRequest) -> HttpResponse:
 
 @login_required
 @csrf_exempt
-def oa_profile(request: HttpRequest) -> HttpResponse:
+def oa_profile(request):
     """ Displays current user profile, allows updates and social linkings. """
     context = {
         'user': request.user,
@@ -102,7 +101,7 @@ def oa_profile(request: HttpRequest) -> HttpResponse:
     return render(request, 'oneall/profile.html', context)
 
 
-def csrf_check(request: HttpRequest, raise_exception=True) -> bool:
+def csrf_check(request, raise_exception=True):
     problem = CsrfViewMiddleware().process_view(request, None, (), {})
     if problem and raise_exception:
         raise SuspiciousOperation

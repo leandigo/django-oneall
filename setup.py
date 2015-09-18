@@ -14,7 +14,7 @@ setup(
             'login.html',
             'profile.html',
             'social_login.html'
-        ]
+        ],
     },
     include_package_data=True,
     install_requires=['pyoneall>=0.2', 'django>=1.8'],

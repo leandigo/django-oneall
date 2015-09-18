@@ -10,7 +10,7 @@ class MissingOneAllSettings(KeyError):
         super().__init__(msg)
 
 
-class AppSettings:
+class AppSettings(object):
     def __init__(self):
         if not hasattr(django_settings, 'ONEALL'):
             raise MissingOneAllSettings
