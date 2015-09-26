@@ -79,7 +79,7 @@ Configure OneAll, for example::
             # Any setting allowed in the login widget assistant can be put here.
         },
         'store_user_info': True,
-        'token_expiration_hours': 3,
+        'email_token_expiration_hours': 3,
     }
 
 Credentials are mandatory. All other settings are optional.

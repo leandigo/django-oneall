@@ -50,7 +50,7 @@ class AppSettings(object):
     @property
     def token_expiration(self):
         """ The amount of time an e-mail login token is valid for. """
-        expires = self._settings.get('token_expiration_hours', 3)
+        expires = self._settings.get('email_token_expiration_hours', 3)
         return timedelta(hours=expires)
 
     @property
