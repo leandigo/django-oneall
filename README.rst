@@ -101,7 +101,7 @@ However, if you're using ``django.contrib.admin``, it implements its own login s
 You then need to override its login screen like so::
 
     url(r'^admin/login', 'django_oneall.views.oa_login'),
-    url(r'^admin/', include('django.contrib.admin.site.urls')),
+    url(r'^admin/', include(admin.site.urls)),
 
 Super User
 ^^^^^^^^^^
