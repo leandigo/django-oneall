@@ -45,21 +45,26 @@ class SocialUserCache(models.Model):
         """
         Update selected fields in the User model from social identity
         """
+        user = self.user
         if 'emails' in self.__dict__ and self.emails:
             email = self.emails[0].value
-            if not self.user:
-                self.user = User.objects.filter(email=email).first() or User(email=email)
+            if not user:
+                user = User.objects.filter(email=email).first() or User(email=email)
             else:
-                self.user.email = email
-        if not self.user:
-            self.user = User()
+                user.email = email
+        if not user:
+            user = User()
         if 'name' in self.__dict__ and 'givenName' in self.name:
-            self.user.first_name = self.name.givenName
+            user.first_name = self.name.givenName
         if 'name' in self.__dict__ and 'familyName' in self.name:
-            self.user.last_name = self.name.familyName
-        if not self.user.username:
-            self.user.username = _find_unique_username(self.preferredUsername)
-        self.user.save()
+            user.last_name = self.name.familyName
+        if not user.username:
+            username = getattr(self, 'preferredUsername', None)
+            username = username or sub(r'@.*$', '', str(self.emails[0].value))
+            username = _find_unique_username(username)
+            user.username = username
+        user.save()
+        self.user = user
         self.save()
 
 
@@ -108,12 +113,16 @@ def _find_unique_username(current):
     def exists(n):
         return User.objects.filter(username=n).exists()
 
+    def cat_maxlen(a, b, l):
+        return a[:l - len(b) - 1] + b
+
+    maxlen = User._meta.get_field('username').max_length
     if current and not exists(current):
         return current
     prefix, suffix = match(r'^(.+?)(\d*)$', current or 'user').groups()
     suffix = int(suffix or 0) + 1
-    current = prefix + str(suffix)
+    current = cat_maxlen(prefix, suffix, maxlen)
     while exists(current):
         suffix += 1
-        current = prefix + str(suffix)
+        current = cat_maxlen(prefix, suffix, maxlen)
     return current
