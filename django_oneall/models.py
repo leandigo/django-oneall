@@ -117,7 +117,8 @@ def _find_unique_username(current):
         return a[:l - len(b) - 1] + b
 
     maxlen = User._meta.get_field('username').max_length
-    if current and not exists(current):
+    current = str(current)
+    if 1 < len(current) <= maxlen and not exists(current):
         return current
     prefix, suffix = match(r'^(.+?)(\d*)$', current or 'user').groups()
     suffix = int(suffix or 0) + 1
