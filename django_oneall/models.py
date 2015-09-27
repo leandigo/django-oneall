@@ -121,8 +121,8 @@ def _find_unique_username(current):
         return current
     prefix, suffix = match(r'^(.+?)(\d*)$', current or 'user').groups()
     suffix = int(suffix or 0) + 1
-    current = cat_maxlen(prefix, suffix, maxlen)
+    current = cat_maxlen(prefix, str(suffix), maxlen)
     while exists(current):
         suffix += 1
-        current = cat_maxlen(prefix, suffix, maxlen)
+        current = cat_maxlen(prefix, str(suffix), maxlen)
     return current
