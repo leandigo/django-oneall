@@ -5,21 +5,39 @@
     <title>Profile</title>
     {% load oneall %}
     {% oneall_header %}
+    {# Bootstrap is not required. This is just to give us some non-hideous default look. #}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 </head>
 <body>
-<h1>Welcome</h1>
-<ul>
-    <li>User: {{user.id}} {{identity.user_token}}</li>
-    <li>Add more social networks:<br/>{% oneall_social_login user %}</li>
-    <li>
-        {% if check_your_mail %}
-        Check your mail to complete the change.
-        {% else %}
-        {{form.as_p}}<input type="submit" />
-        {% endif %}
-    </li>
-    <li><a href="/">Go home</a></li>
-    <li><a href="{% url 'oneall-logout' %}">Logout</a></li>
-</ul>
+<div class="container">
+    <div class="row">
+        <h1>Welcome</h1>
+
+        <div class="col-sm-4 col-xs-12">
+            <h2>User info</h2>
+            <ul>
+                <li>User #{{ user.id }}: {{ user.username }}</li>
+                <li>Your OneAll user token is: {{ identity.user_token }}</li>
+                <li><a href="/">Go home</a></li>
+                <li><a href="{% url 'oneall-logout' %}">Logout</a></li>
+            </ul>
+        </div>
+        <form class="col-sm-4 col-xs-6" method="post">
+            <h2>Update E-mail</h2>
+
+            <div>
+                {% if check_your_mail %}
+                    Check your mail to complete the change.
+                {% else %}
+                    {{ form.as_p }}<input type="submit"/>
+                {% endif %}
+            </div>
+        </form>
+        <div class="col-sm-4 col-xs-6">
+            <h2>Add Networks</h2>
+            {% oneall_social_login user %}
+        </div>
+    </div>
+</div>
 </body>
 </html>
