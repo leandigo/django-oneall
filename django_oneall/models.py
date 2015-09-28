@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from logging import getLogger
+from random import Random
 from re import match, sub
 from uuid import uuid4
 
@@ -9,6 +11,10 @@ from django.utils.timezone import now
 from pyoneall.base import OADict
 
 from .app import settings
+
+log = getLogger(__name__)
+
+USERNAME_MAXLEN = User._meta.get_field('username').max_length
 
 
 class SocialUserCache(models.Model):
@@ -116,14 +122,27 @@ def _find_unique_username(current):
     def cat_maxlen(a, b, l):
         return a[:l - len(b) - 1] + b
 
-    maxlen = User._meta.get_field('username').max_length
-    current = str(current)
-    if 1 < len(current) <= maxlen and not exists(current):
+    current = str(current)[:USERNAME_MAXLEN]
+    if current and not exists(current):
         return current
     prefix, suffix = match(r'^(.+?)(\d*)$', current or 'user').groups()
     suffix = int(suffix or 0) + 1
-    current = cat_maxlen(prefix, str(suffix), maxlen)
+    current = cat_maxlen(prefix, str(suffix), USERNAME_MAXLEN)
     while exists(current):
         suffix += 1
-        current = cat_maxlen(prefix, str(suffix), maxlen)
+        current = cat_maxlen(prefix, str(suffix), USERNAME_MAXLEN)
     return current
+
+
+def get_pseudo_random_user(seed):
+    """ Creates or finds a user with a pseudo-random username and no further information.
+    :param seed: A hashable object used to find the user. Will not be stored. """
+    alphabet = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz'  # [chr(i+65)+chr(i+97) for i in range(26)]
+    not_so_random = Random(seed)
+    username = ''.join(map(lambda x: not_so_random.choice(alphabet), range(USERNAME_MAXLEN)))
+    try:
+        return User.objects.get(username=username)
+    except User.DoesNotExist:
+        user = User(username=username)
+        user.save()
+        return user

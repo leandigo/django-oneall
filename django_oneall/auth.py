@@ -8,7 +8,7 @@ from django.http import QueryDict
 from pyoneall import OneAll
 
 from .app import settings
-from .models import SocialUserCache, EmailLoginToken
+from .models import SocialUserCache, EmailLoginToken, get_pseudo_random_user
 
 log = getLogger(__name__)
 
@@ -40,14 +40,17 @@ class OneAllAuthBackend(BaseBackend):
         """
         oa_user = oneall.connection(connection_token).user
 
+        if not settings.store_user_info:
+            # Do not store any personally identifiable information.
+            return get_pseudo_random_user(UUID(oa_user.user_token))
+
         # Check if user exists and create one if not
         try:
             identity = SocialUserCache.objects.get(user_token=oa_user.user_token)
-            if settings.store_user_info:
-                identity.refresh(raw=oa_user.identity)
-                if self.user:
-                    identity.user = self.user  # override any existing link.
-                identity.update_user_cache()
+            identity.refresh(raw=oa_user.identity)
+            if self.user:
+                identity.user = self.user  # override any existing link.
+            identity.update_user_cache()
         except SocialUserCache.DoesNotExist:
             identity = SocialUserCache(user_token=oa_user.user_token,
                                        raw=str(oa_user.identity), user=self.user)
