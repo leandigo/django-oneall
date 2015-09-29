@@ -37,7 +37,10 @@ setup(
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.4',  # Could be more! Not tested yet.
+        # Python 3.2 is not supported because "future" is incompatible with it.
+        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
         'Topic :: System :: Systems Administration :: Authentication/Directory',
     ],
 )
