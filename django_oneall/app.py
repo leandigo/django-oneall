@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 from datetime import timedelta
 
+from django import get_version
 from django.conf import settings as django_settings
+
+from . import __version__
 
 
 class MissingOneAllSettings(KeyError):
@@ -26,7 +29,13 @@ class AppSettings(object):
     def credentials(self):
         """ Provides the credentials dictionary for the OneAll connection. """
         try:
-            return self._settings['credentials']
+            creds = dict(self._settings['credentials'])  # Make a copy.
+            if 'ua_prefix' in creds:
+                creds['ua_prefix'] += ' '
+            else:
+                creds['ua_prefix'] = ''
+            creds['ua_prefix'] += 'django-oneall-%s Django-%s' % (__version__, get_version())
+            return creds
         except KeyError:
             raise MissingOneAllSettings('OneAll site credentials missing.')
 

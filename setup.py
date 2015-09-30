@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 README = open(join(dirname(__file__), 'README.rst')).read()
 setup(
     name='django-oneall',
-    version='1.0',
+    version='1.0.1',
     packages=find_packages(),
     package_data={
         'django_oneall/templates/oneall': [
@@ -17,7 +17,7 @@ setup(
         ],
     },
     include_package_data=True,
-    install_requires=['pyoneall>=0.2.1', 'django>=1.8'],
+    install_requires=['pyoneall>=0.2.2', 'django>=1.8'],
     license='MIT License, see LICENSE file',
     description='Django Authentication support for OneAll. Provides unified authentication for 30+ social networks',
     long_description=README,

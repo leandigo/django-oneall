@@ -13,7 +13,7 @@ Requirements
 ------------
 
 #. ``django>=1.8`` (Wasn't tested on earlier versions, but might work)
-#. ``pyoneall==0.2``
+#. ``pyoneall>=0.2.2``
 
 Implementation Overview
 -----------------------
