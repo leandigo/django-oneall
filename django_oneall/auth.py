@@ -3,10 +3,12 @@ from base64 import urlsafe_b64decode, urlsafe_b64encode
 from logging import getLogger
 from uuid import UUID
 
+from django import get_version
 from django.contrib.auth.backends import ModelBackend
 from django.http import QueryDict
 from pyoneall import OneAll
 
+from . import __version__
 from .app import settings
 from .models import SocialUserCache, EmailLoginToken, get_pseudo_random_user
 
@@ -14,6 +16,7 @@ log = getLogger(__name__)
 
 # The worker to be used for authentication
 oneall = OneAll(**settings.credentials)
+oneall.set_version(__version__, 'django-oneall', get_version())
 
 
 class BaseBackend(object):
