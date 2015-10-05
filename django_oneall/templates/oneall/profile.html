@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head lang="en">
+    {% load i18n %}
     <meta charset="UTF-8">
-    <title>Profile</title>
+    <title>{% trans "Profile" %}</title>
     {% load oneall %}
     {% oneall_header %}
     {# Bootstrap is not required. This is just to give us some non-hideous default look. #}
@@ -11,30 +12,31 @@
 <body>
 <div class="container">
     <div class="row">
-        <h1>Welcome</h1>
+        <h1>{% trans "Welcome" %}</h1>
 
         <div class="col-sm-4 col-xs-12">
-            <h2>User info</h2>
+            <h2>{% trans "User info" %}</h2>
             <ul>
-                <li>User #{{ user.id }}: {{ user.username }}</li>
-                <li>Your OneAll user token is: {{ identity.user_token }}</li>
-                <li><a href="/">Go home</a></li>
-                <li><a href="{% url 'oneall-logout' %}">Logout</a></li>
+                <li>{% blocktrans %}User #{{ user.id }}: {{ user.username }}{% endblocktrans %}</li>
+                <li>{% blocktrans %}Your OneAll user token is: {{ identity.user_token }}{% endblocktrans %}</li>
+                <li><a href="/">{% trans "Go home" %}</a></li>
+                <li><a href="{% url 'oneall-logout' %}">{% trans "Logout" %}</a></li>
             </ul>
         </div>
         <form class="col-sm-4 col-xs-6" method="post">
-            <h2>Update E-mail</h2>
+            <h2>{% trans "Update E-mail" %}</h2>
 
             <div>
                 {% if check_your_mail %}
-                    Check your mail to complete the change.
+                    {% trans "Check your mail to complete the change." %}
                 {% else %}
-                    {{ form.as_p }}<input type="submit"/>
+                    {{ form.as_p }}
+                    <input type="submit" value="{% trans 'Update' %}">
                 {% endif %}
             </div>
         </form>
         <div class="col-sm-4 col-xs-6">
-            <h2>Add Networks</h2>
+            <h2>{% trans "Add Networks" %}</h2>
             {% oneall_social_login user %}
         </div>
     </div>
