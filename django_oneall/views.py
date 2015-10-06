@@ -10,7 +10,7 @@ from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirectBase
 from django.middleware.csrf import CsrfViewMiddleware
 from django.shortcuts import render, resolve_url
-from django.utils.translation import ugettext_lazy as _t, ugettext as _tt
+from django.utils.translation import ugettext
 from django.views.decorators.csrf import csrf_exempt
 
 from .app import settings
@@ -65,10 +65,10 @@ def mail_login_token(request, email, args):
     args.setlist('next', request.GET.getlist('next'))
     relative_uri = '%s?%s' % (reverse('oneall-login'), args.urlencode())
     message = EmailMessage()
-    message.subject = _t("Login")
+    message.subject = ugettext("Login")
     message.to = [email]
     message.body = "\n".join([
-        _tt("Complete your login using this link:"),
+        ugettext("Complete your login using this link:"),
         request.build_absolute_uri(relative_uri),
     ])
     Thread(target=message.send, args=(True,)).start()

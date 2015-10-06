@@ -1,0 +1,99 @@
+# django-oneall.
+# Copyright (C) Leandigo and Ekevoo
+# This file is distributed under the same license as the django-oneall package.
+# Ekevoo, 2015.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: django-oneall 1.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-10-05 02:58+0000\n"
+"PO-Revision-Date: 2015-10-05 02:05+0000\n"
+"Last-Translator: Ekevoo <ekevoo@users.noreply.github.com>\n"
+"Language-Team: Ekevoo <ekevoo@users.noreply.github.com>\n"
+"Language: Portuguese (Brazilian)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: django-oneall/django_oneall/forms.py:7
+msgid "E-mail"
+msgstr ""
+
+#: django-oneall/django_oneall/templates/oneall/login.html:6
+#: django-oneall/django_oneall/templates/oneall/login.html:15
+#: django-oneall/django_oneall/templates/oneall/login.html:37
+#: django-oneall/django_oneall/views.py:68
+msgid "Login"
+msgstr ""
+
+#: django-oneall/django_oneall/templates/oneall/login.html:18
+msgid "Login failed!"
+msgstr "Login falhou!"
+
+#: django-oneall/django_oneall/templates/oneall/login.html:22
+msgid "Logged out!"
+msgstr "Logout com sucesso!"
+
+#: django-oneall/django_oneall/templates/oneall/login.html:26
+msgid "Social Login"
+msgstr "Login Social"
+
+#: django-oneall/django_oneall/templates/oneall/login.html:32
+msgid "E-mail Login"
+msgstr "Login via E-mail"
+
+#: django-oneall/django_oneall/templates/oneall/login.html:34
+msgid "Check your e-mail for the login link."
+msgstr "Veja seu e-mail para o link de login."
+
+#: django-oneall/django_oneall/templates/oneall/profile.html:6
+msgid "Profile"
+msgstr "Perfil"
+
+#: django-oneall/django_oneall/templates/oneall/profile.html:15
+msgid "Welcome"
+msgstr "Bem-vindo"
+
+#: django-oneall/django_oneall/templates/oneall/profile.html:18
+msgid "User info"
+msgstr "Dados pessoais"
+
+#: django-oneall/django_oneall/templates/oneall/profile.html:20
+#, python-format
+msgid "User #%(user.id)s: %(user.username)s"
+msgstr "Usuário #%(user.id)s: %(user.username)s"
+
+#: django-oneall/django_oneall/templates/oneall/profile.html:21
+#, python-format
+msgid "Your OneAll user token is: %(identity.user_token)s"
+msgstr "Seu token OneAll é: %(identity.user_token)s"
+
+#: django-oneall/django_oneall/templates/oneall/profile.html:22
+msgid "Go home"
+msgstr "Ao começo"
+
+#: django-oneall/django_oneall/templates/oneall/profile.html:23
+msgid "Logout"
+msgstr ""
+
+#: django-oneall/django_oneall/templates/oneall/profile.html:27
+msgid "Update E-mail"
+msgstr "Atualizar E-mail"
+
+#: django-oneall/django_oneall/templates/oneall/profile.html:31
+msgid "Check your mail to complete the change."
+msgstr "Veja seu e-mail para completar a troca."
+
+#: django-oneall/django_oneall/templates/oneall/profile.html:34
+msgid "Update"
+msgstr "Atualizar"
+
+#: django-oneall/django_oneall/templates/oneall/profile.html:39
+msgid "Add Networks"
+msgstr "Adicionar Redes"
+
+#: django-oneall/django_oneall/views.py:71
+msgid "Complete your login using this link:"
+msgstr "Complete seu login usando esse link:"

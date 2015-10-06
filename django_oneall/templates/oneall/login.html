@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head lang="en">
+    {% load i18n %}
     <meta charset="UTF-8">
-    <title>Login</title>
+    <title>{% trans "Login" %}</title>
     {% load oneall %}
     {% oneall_header %}
     {# Bootstrap is not required. This is just to give us some non-hideous default look. #}
@@ -11,28 +12,29 @@
 <body>
 <div class="container">
     <div class="row">
-        <h1>Login</h1>
+        <h1>{% trans "Login" %}</h1>
 
         {% if login_failed %}
-            <div id="login_failed">Login failed!</div>
+            <div id="login_failed">{% trans "Login failed!" %}</div>
         {% endif %}
 
         {% if logged_out %}
-            <div id="logged_out">Logged out!</div>
+            <div id="logged_out">{% trans "Logged out!" %}</div>
         {% endif %}
 
         <div class="col-sm-6">
-            <h2>Social Login</h2>
-
+            <h2>{% trans "Social Login" %}</h2>
             {% oneall_social_login %}
         </div>
+
         <form method="post" class="col-sm-6">
             {% csrf_token %}
-            <h2>Email Login</h2>
+            <h2>{% trans "E-mail Login" %}</h2>
             {% if check_your_mail %}
-                Check your e-mail for the login link.
+                {% trans "Check your e-mail for the login link." %}
             {% else %}
-                {{ email_form.as_p }} <input type="submit" value=" Login "/>
+                {{ email_form.as_p }}
+                <input type="submit" value="{% trans 'Login' %}">
             {% endif %}
         </form>
     </div>
