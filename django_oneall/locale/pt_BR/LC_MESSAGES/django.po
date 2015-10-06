@@ -5,7 +5,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: django-oneall VERSION\n"
+"Project-Id-Version: django-oneall 1.1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-10-05 02:58+0000\n"
 "PO-Revision-Date: 2015-10-05 02:05+0000\n"
