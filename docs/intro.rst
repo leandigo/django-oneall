@@ -22,10 +22,9 @@ Install it using the CheeseShop_::
     pip install django_oneall
 
 This will also install its requirements Django_ and pyoneall_, and whichever the requirements of those are.
-After that you must configure_ your Django project to use ``django-oneall``.
+After that you must configure your Django project to use ``django-oneall``.
 
 .. _Django: https://www.djangoproject.com/
 .. _OneAll: https://www.oneall.com/
 .. _pyoneall: https://pypi.python.org/pypi/pyoneall
 .. _CheeseShop: https://pypi.python.org/pypi
-.. _configure: settings.rst
