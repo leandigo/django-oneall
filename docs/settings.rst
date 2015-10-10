@@ -109,14 +109,40 @@ For e-mail authentication, the user will be created if necessary and will be pro
 The console will display the e-mail login link to be manually pasted in a web browser.
 Should your end user be unavailable to complete login, don't worry, they have already been made super-user.
 
-Template
-^^^^^^^^
-Pages that implement OneAll widgets must include in their ``<head>``::
+Templates and Views
+^^^^^^^^^^^^^^^^^^^
+
+This is an optional step. You'll see that there are three views provided by this package, with two templates:
+
+================= ========== =============
+Suggested Route   View name  HTML Template
+================= ========== =============
+/accounts/login   oa_login   login.html
+/accounts/logout  oa_logout  *(none)*
+/accounts/profile oa_profile profile.html
+================= ========== =============
+
+The default ``login.html`` and ``profile.html`` are built to be simple and effective.
+However, should you need any customization, it's recommended to copy these two files to your project's
+``templates`` directory like below and modify them to suit your needs::
+
+    myproj
+    +- manage.py
+    +- myproj
+    |  +- settings.py
+    |  +- urls.py
+    |  +- wsgi.py
+    +- templates
+       +- oneall
+          +- login.html
+          +- profile.html
+
+Should you create any further pages that implement OneAll widgets, include in their ``<head>``::
 
     {% load oneall %}
     {% oneall_header %}
 
-The login Widget can be included manually as instructed through the OneAll assistant, or, if you're feeling lazy::
+The login widget itself can be included manually as instructed through the wizard_, or, if you're feeling lazy::
 
     {% oneall_social_login %}
 
@@ -124,11 +150,9 @@ You can also pass an optional argument (it must be the Django ``User`` object) i
 
     {% oneall_social_login current_user %}
 
-This is all auto provided by the included templates ``login.html`` and ``profile.html``.
-It is recommended to use them as a base to make your own login and profile pages.
-
 .. _Django project: https://docs.djangoproject.com/en/1.8/intro/tutorial01/
 .. |lr| replace:: ``login_required``
 .. _lr: https://docs.djangoproject.com/en/1.8/topics/auth/default/#django.contrib.auth.decorators.login_required
 .. _OneAll control panel: https://app.oneall.com/applications/
 .. _configure your e-mail backend: https://docs.djangoproject.com/en/1.8/ref/settings/#email-backend
+.. _wizard: https://app.oneall.com/applications/application/implementation/wizard/social-login/

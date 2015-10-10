@@ -12,7 +12,7 @@ Contents:
 
     intro
     settings
-
+    modules
 
 
 Indices and tables

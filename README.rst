@@ -19,9 +19,6 @@ Requirements:
 #. django_
 #. pyoneall_
 
-Implementation Overview
------------------------
-
 This package provides user authentication capabilities based on ``django.contrib.auth``. It provides the following
 components:
 
@@ -29,9 +26,7 @@ components:
 #. An identity model which stores a cached copy of the user's identity
 #. A callback view for the authentication process
 
-Installation
-------------
-::
+Installation::
 
     pip install django_oneall
 
