@@ -56,7 +56,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'django-oneall'
-copyright = '2015, Leandigo, Ekevoo'
+copyright = '2013-2015, Leandigo and Ekevoo'
 author = 'Leandigo, Ekevoo'
 
 # The version info for the project you're documenting, acts as replacement for
