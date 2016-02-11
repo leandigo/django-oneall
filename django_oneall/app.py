@@ -7,7 +7,7 @@ from django.conf import settings as django_settings
 class MissingOneAllSettings(KeyError):
     def __init__(self, msg=None):
         msg = 'Missing or invalid settings. Check django-oneall documentation for further info. ' + (msg or '')
-        super().__init__(msg)
+        super(MissingOneAllSettings, self).__init__(msg)
 
 
 class AppSettings(object):
