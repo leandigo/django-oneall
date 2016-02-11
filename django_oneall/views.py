@@ -94,7 +94,8 @@ def oa_profile(request):
         'form': EmailForm({'email': request.user.email})
     }
     if 'connection_token' in request.POST:
-        OneAllAuthBackend(request.user).authenticate(**request.POST)
+        auth_with = dict(request.POST.items())
+        OneAllAuthBackend(request.user).authenticate(**auth_with)
     elif 'email' in request.POST and request.user.email != request.POST['email']:
         csrf_check(request)
         EmailTokenAuthBackend(request.user).issue(request.POST['email'])
