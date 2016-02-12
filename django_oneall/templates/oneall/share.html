@@ -1,0 +1,6 @@
+{# This file is what's inserted for the custom tag: {% oneall_share %} #}
+<div class="oas_box oas_box_btns_{{ layout }}" {{ arguments }}>
+    {% for network in networks %}
+    <span class="oas_btn oas_btn_{{ network }}"></span>
+    {% endfor %}
+</div>
