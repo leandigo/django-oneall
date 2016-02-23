@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 README = open(join(dirname(__file__), 'README.rst')).read()
 setup(
     name='django-oneall',
-    version='1.1.0',
+    version='1.1.2',
     packages=find_packages(),
     package_data={
         'django_oneall/templates/oneall': [
@@ -27,7 +27,7 @@ setup(
     maintainer='Ekevoo',
     maintainer_email='ekevoo@gmail.com',
     classifiers=[
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
         'Framework :: Django :: 1.8',
         'Intended Audience :: Developers',
