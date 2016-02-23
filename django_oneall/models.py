@@ -15,6 +15,7 @@ from .app import settings
 
 log = getLogger(__name__)
 
+
 class SocialUserCache(models.Model):
     """
     OneAll User Identity Model
@@ -34,6 +35,7 @@ class SocialUserCache(models.Model):
     def refresh(self, raw=None):
         """
         Refresh identity cache from OneAll
+        :param raw: JSON data as given by OneAll.
         """
         if not raw:
             from .auth import oneall
@@ -49,16 +51,16 @@ class SocialUserCache(models.Model):
         """
         Update selected fields in the User model from social identity
         """
-        User = get_user_model()
+        user_model = get_user_model()
         user = self.user
         if 'emails' in self.__dict__ and self.emails:
             email = self.emails[0].value
             if not user:
-                user = User.objects.filter(email=email).first() or User(email=email)
+                user = user_model.objects.filter(email=email).first() or user_model(email=email)
             else:
                 user.email = email
         if not user:
-            user = User()
+            user = user_model()
         if hasattr(user, 'first_name') and 'name' in self.__dict__ and 'givenName' in self.name:
             user.first_name = self.name.givenName
         if hasattr(user, 'last_name') and 'name' in self.__dict__ and 'familyName' in self.name:
@@ -96,11 +98,11 @@ class EmailLoginToken(models.Model):
         return login  # Despite being removed from the db, we're still going to use this object for a bit longer.
 
     def produce_user(self):
-        User = get_user_model()
-        user = User.objects.filter(email=self.email).first()
+        user_model = get_user_model()
+        user = user_model.objects.filter(email=self.email).first()
         if not user:
             preferred_username = sub(r'@.*$', '', str(self.email))
-            user = User(email=self.email, username=_find_unique_username(preferred_username))
+            user = user_model(email=self.email, username=_find_unique_username(preferred_username))
             user.save()
         return user
 
@@ -112,41 +114,41 @@ class EmailLoginToken(models.Model):
 
 def _find_unique_username(current):
     """
-    Checks wether given username is unique.
+    Checks whether given username is unique.
     If not unique or not given, tries to derive a new username that is.
     """
-    User = get_user_model()
-    USERNAME_MAXLEN = User._meta.get_field('username').max_length
+    user_model = get_user_model()
+    max_length = user_model._meta.get_field('username').max_length
 
     def exists(n):
-        return User.objects.filter(username=n).exists()
+        return user_model.objects.filter(username=n).exists()
 
     def cat_maxlen(a, b, l):
         return a[:l - len(b) - 1] + b
 
-    current = str(current)[:USERNAME_MAXLEN]
+    current = str(current)[:max_length]
     if current and not exists(current):
         return current
     prefix, suffix = match(r'^(.+?)(\d*)$', current or 'user').groups()
     suffix = int(suffix or 0) + 1
-    current = cat_maxlen(prefix, str(suffix), USERNAME_MAXLEN)
+    current = cat_maxlen(prefix, str(suffix), max_length)
     while exists(current):
         suffix += 1
-        current = cat_maxlen(prefix, str(suffix), USERNAME_MAXLEN)
+        current = cat_maxlen(prefix, str(suffix), max_length)
     return current
 
 
 def get_pseudo_random_user(seed):
     """ Creates or finds a user with a pseudo-random username and no further information.
     :param seed: A hashable object used to find the user. Will not be stored. """
-    User = get_user_model()
-    USERNAME_MAXLEN = User._meta.get_field('username').max_length
+    user_model = get_user_model()
+    max_length = user_model._meta.get_field('username').max_length
     alphabet = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz'  # [chr(i+65)+chr(i+97) for i in range(26)]
     not_so_random = Random(seed)
-    username = ''.join(map(lambda x: not_so_random.choice(alphabet), range(USERNAME_MAXLEN)))
+    username = ''.join(map(lambda x: not_so_random.choice(alphabet), range(max_length)))
     try:
-        return User.objects.get(username=username)
-    except User.DoesNotExist:
-        user = User(username=username)
+        return user_model.objects.get(username=username)
+    except user_model.DoesNotExist:
+        user = user_model(username=username)
         user.save()
         return user
