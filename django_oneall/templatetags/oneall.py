@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 from json import dumps
 
+from django.db.models import get_user_model
 from django.template import Library
 from django.utils.safestring import mark_safe
 
 from ..app import settings
-from ..models import User, SocialUserCache
+from ..models import SocialUserCache
 
 register = Library()
 
@@ -31,7 +32,7 @@ def oneall_social_login(user=None, **kwargs):
     :param user: Logged in user for Social Link mode; if not provided, it's Social Login mode.
     :param kwargs: Widget options as documented by OneAll. For example, ``grid_sizes=[8,5]``
     """
-    if isinstance(user, User):
+    if isinstance(user, get_user_model()):
         social_user = SocialUserCache.objects.filter(user=user).first()
         if social_user:
             kwargs['user_token'] = str(social_user.user_token)
