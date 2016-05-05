@@ -3,6 +3,7 @@ from json import dumps
 
 from django.db.models import get_user_model
 from django.template import Library
+from django.utils.html import escape
 from django.utils.safestring import mark_safe
 
 from ..app import settings
@@ -44,4 +45,27 @@ def oneall_social_login(user=None, **kwargs):
     return {
         'settings': widget_settings,
         'mode': 'social_link' if user else 'social_login',
+    }
+
+
+@register.inclusion_tag('oneall/social_sharing.html')
+def oneall_share(layout='s', **kwargs):
+    """
+    This tag display the `Social Sharing`_ widget.
+
+    .. _Social Sharing: https://www.oneall.com/services/social-sharing/
+
+    Don't forget to include ``{% oneall_header %}``!
+
+    :param layout: Button layout as defined by the Social Sharing Wizard.
+    :param kwargs: Social link arguments.
+    """
+    layout = str(layout).lower()
+    if layout not in 'smlhv':
+        raise ValueError("Invalid layout (%s). Must be one of S M L H or V." % layout)
+    args = ' '.join(('data-%s="%s"' % (k, escape(v)) for k, v in kwargs.items()))
+    return {
+        'layout': layout,
+        'arguments': mark_safe(args),
+        'networks': settings.share_widget['networks']
     }

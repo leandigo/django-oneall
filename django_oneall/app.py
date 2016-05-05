@@ -21,6 +21,10 @@ class AppSettings(object):
             None: "This is a dummy marker to indicate that the Django settings haven't been loaded yet.",
             'providers': 'google facebook twitter openid'.split(),
         }
+        self._default_share_widget = {
+            None: "This is a dummy marker to indicate that the Django settings haven't been loaded yet.",
+            'providers': 'linkedin twitter facebook'.split(),
+        }
 
     @property
     def credentials(self):
@@ -41,6 +45,14 @@ class AppSettings(object):
             return result
         else:
             return self._default_login_widget
+
+    @property
+    def share_widget(self):
+        """ Provides the share widget configuration. """
+        if None in self._default_share_widget:
+            del self._default_share_widget[None]
+            self._default_share_widget.update(self._settings.get('share_widget', {}))
+        return self._default_share_widget
 
     @property
     def store_user_info(self):
