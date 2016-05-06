@@ -19,17 +19,9 @@ oneall = OneAll(**settings.credentials)
 oneall.set_version(__version__, 'django-oneall', get_version())
 
 
-class BaseBackend(object):
+class BaseBackend(ModelBackend):
     def __init__(self, existing_user=None):
         self.user = existing_user
-
-    @classmethod
-    def get_user(cls, user_id):
-        """
-        Retrieve user by user ID
-        :param user_id: User ID
-        """
-        return ModelBackend().get_user(user_id)
 
 
 class OneAllAuthBackend(BaseBackend):
