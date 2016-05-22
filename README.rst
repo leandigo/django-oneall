@@ -7,8 +7,8 @@ django-oneall - Django Authentication support for OneAll
     :alt: Join the chat at https://gitter.im/leandigo/django-oneall
     :target: https://gitter.im/leandigo/django-oneall?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge
 ..  image:: https://readthedocs.org/projects/pip/badge/
-    :alt: Read the documentation at http://django-oneall.readthedocs.org/
-    :target: http://django-oneall.readthedocs.org/?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge
+    :alt: Read the documentation at http://django-oneall.readthedocs.io/
+    :target: http://django-oneall.readthedocs.io/?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge
 
 **OneAll** (|oneall|_) provides web-applications with a unified API for **30+ social networks**.
 
@@ -42,7 +42,7 @@ Released under the MIT License. See the LICENSE_ file for details.
 .. _oneall: http://www.oneall.com
 .. _django: https://www.djangoproject.com
 .. _pyoneall: https://github.com/leandigo/pyoneall
-.. _full documentation: http://django-oneall.readthedocs.org/
+.. _full documentation: http://django-oneall.readthedocs.io/
 .. |leandigo| replace:: www.leandigo.com
 .. _leandigo: http://www.leandigo.com
 .. _Ekevoo: http://ekevoo.com
