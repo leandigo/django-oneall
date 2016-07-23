@@ -27,7 +27,7 @@ class Command(BaseCommand):
             pass
         if '@' in user:
             auth = EmailTokenAuthBackend()
-            self.stdout.write("Login with: %s?%s" % (reverse('oneall-login'), auth.issue(user)))
+            self.stdout.write("Login with: %s?%s" % (reverse('oneall-login'), auth.issue(user).urlencode()))
             return auth.login.produce_user()
         self.stdout.write("User <%s> not found." % user)
 
