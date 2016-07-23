@@ -80,14 +80,18 @@ After that, if you're updating from 0.1.4 or older, the legacy table ``oneall_ca
 ^^^^^^^^^^^
 Add the following URL pattern to your ``urlpatterns`` in your global ``urls.py``::
 
-    url(r'^accounts/', include('django_oneall.urls')),
+    import django_oneall.urls
+
+    url(r'^accounts/', include(django_oneall.urls)),
 
 Using this Django App in ``/accounts/`` will work as a drop-in replacement to ``django.contrib.auth``.
 
 However, if you're using ``django.contrib.admin``, it implements its own login screen, which conflicts with OneAll's.
-You then need to override its login screen like so::
+You then need to **also** override its login screen like so::
 
-    url(r'^admin/login', 'django_oneall.views.oa_login'),
+    import django_oneall.views
+
+    url(r'^admin/login', django_oneall.views.oa_login),
     url(r'^admin/', include(admin.site.urls)),
 
 Super User
