@@ -4,16 +4,20 @@ from random import Random
 from re import match, sub
 from uuid import uuid4
 
+from django.conf import settings as django_settings
 from django.db import models
 from django.db.transaction import atomic
 from django.utils.timezone import now
-from django.conf import settings as django_settings
-from django.contrib.auth import get_user_model
 from pyoneall.base import OADict
 
 from .app import settings
 
 log = getLogger(__name__)
+
+try:
+    from django.contrib.auth import get_user_model
+except ImportError:
+    from django.db.models import get_user_model
 
 
 class SocialUserCache(models.Model):

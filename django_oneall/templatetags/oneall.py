@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 from json import dumps
 
-from django.contrib.auth import get_user_model
 from django.template import Library
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
 
 from ..app import settings
-from ..models import SocialUserCache
+from ..models import SocialUserCache, get_user_model
 
 register = Library()
 

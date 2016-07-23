@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 from uuid import UUID
 
-from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 from django.core.urlresolvers import reverse
 
 from ...auth import EmailTokenAuthBackend
-from ...models import SocialUserCache
+from ...models import SocialUserCache, get_user_model
 
 
 class Command(BaseCommand):
