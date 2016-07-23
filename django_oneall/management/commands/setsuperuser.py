@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 from uuid import UUID
 
-from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 from django.core.urlresolvers import reverse
 
 from ...auth import EmailTokenAuthBackend
-from ...models import SocialUserCache
+from ...models import SocialUserCache, get_user_model
 
 
 class Command(BaseCommand):
@@ -27,7 +26,7 @@ class Command(BaseCommand):
             pass
         if '@' in user:
             auth = EmailTokenAuthBackend()
-            self.stdout.write("Login with: %s?%s" % (reverse('oneall-login'), auth.issue(user)))
+            self.stdout.write("Login with: %s?%s" % (reverse('oneall-login'), auth.issue(user).urlencode()))
             return auth.login.produce_user()
         self.stdout.write("User <%s> not found." % user)
 

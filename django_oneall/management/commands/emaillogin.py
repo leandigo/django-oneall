@@ -21,7 +21,7 @@ class Command(BaseCommand):
             self.stderr.write("Failed. E-mail is mandatory.")
             return
         query_string = EmailTokenAuthBackend().issue(email)
-        msg = "Complete login with: %s?%s" % (reverse('oneall-login'), query_string)
+        msg = "Complete login with: %s?%s" % (reverse('oneall-login'), query_string.urlencode())
         self.stdout.write(msg)
         if send:
             mail = EmailMessage()
