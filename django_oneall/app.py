@@ -3,6 +3,11 @@ from datetime import timedelta
 
 from django.conf import settings as django_settings
 
+try:
+    from django.contrib.auth import get_user_model
+except ImportError:
+    from django.db.models import get_user_model
+
 
 class MissingOneAllSettings(KeyError):
     def __init__(self, msg=None):
@@ -60,6 +65,20 @@ class AppSettings(object):
         return bool(self._settings.get('store_user_info', True))
 
     @property
+    def max_username_length(self):
+        """ Maximum length of pseudorandom username generated when store_user_info=False is set.  Defaults to the max_length of the username field introspected by get_user_model)
+
+            Django 1.10 included a migration which updated the max_length of the username field from 30 to 150 chars.  If you used django-oneall with older Django versions  and are upgrading to Django>=1.10, 
+            you will want to set the value of this to 30 (or whatever max_length your custom User model may have) so that your existing user accounts are not mis-identified
+        """
+        user_model = get_user_model()
+        fld_len = user_model._meta.get_field('username').max_length
+        max_len = int(self._settings.get("max_username_length", fld_len))
+        if max_len > fld_len:
+            raise MissingOneAllSettings("OneAll setting 'max_username_length' is set to value %d, which is greater than the database field's length: %d" % (max_len, fld_len))
+        return max_len
+
+    @property
     def token_expiration(self):
         """ The amount of time an e-mail login token is valid for. """
         expires = self._settings.get('email_token_expiration_hours', 3)
@@ -69,6 +88,7 @@ class AppSettings(object):
     def default_url(self):
         """ Default redirect URL after login if ``next`` is not provided. This is just a standard Django setting. """
         return django_settings.LOGIN_REDIRECT_URL  # Can be assumed to be set.
+
 
 
 settings = AppSettings()
