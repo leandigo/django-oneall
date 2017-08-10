@@ -55,9 +55,23 @@ Here's a different, more detailed alternative to the third step::
             'grid_sizes': [7, 5],
             # Any setting allowed in the login widget assistant can be put here.
         },
-        'store_user_info': True,
+        'store_user_info': False,
+        'max_username_length': 30,
         'email_token_expiration_hours': 3,
     }
+
+In the above example, the ``store_user_info`` feature is set to ``False`` (default is True).  This
+setting provides your users with true anonymity, as none of the information provided by
+oneall.com is saved or even cached.  Instead the user's oneall identification token is hashed
+and stored as the username.
+
+The example above also makes use of the ``max_username_length`` setting.  (default value of this field
+is introspected via get_user_model()). This setting is *only* relevant when using ``store_user_info=False``.
+The primary reason for this new setting is that Django 1.10 included a migration which altered the
+auth.User model's username field max_length from 30 to 150 chars.  This means if your were making
+use of the ``store_user_info=False`` setting with Django<=1.9 and upgrade to Django>=1.10 your pre-existing
+users **will be misidentified**. If this is the case, you should set this value to `30`
+
 
 If you plan to use E-mail Token authentication, you must also `configure your e-mail backend`_.
 Here's a good setting for development::
