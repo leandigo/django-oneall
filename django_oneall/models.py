@@ -122,8 +122,8 @@ def _find_unique_username(current):
     If not unique or not given, tries to derive a new username that is.
     """
     user_model = get_user_model()
-    max_length = user_model._meta.get_field('username').max_length
-
+    # max_length = user_model._meta.get_field('username').max_length
+    max_length = settings.max_username_length
     def exists(n):
         return user_model.objects.filter(username=n).exists()
 
@@ -146,7 +146,8 @@ def get_pseudo_random_user(seed):
     """ Creates or finds a user with a pseudo-random username and no further information.
     :param seed: A hashable object used to find the user. Will not be stored. """
     user_model = get_user_model()
-    max_length = user_model._meta.get_field('username').max_length
+    # max_length = user_model._meta.get_field('username').max_length
+    max_length = settings.max_username_length
     alphabet = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz'  # [chr(i+65)+chr(i+97) for i in range(26)]
     not_so_random = Random(seed)
     username = ''.join(map(lambda x: not_so_random.choice(alphabet), range(max_length)))
