@@ -90,5 +90,4 @@ class AppSettings(object):
         return django_settings.LOGIN_REDIRECT_URL  # Can be assumed to be set.
 
 
-
 settings = AppSettings()
