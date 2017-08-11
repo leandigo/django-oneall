@@ -27,6 +27,11 @@ Second, add the Django authentication backends::
         'django_oneall.auth.EmailTokenAuthBackend',  # Optional
     )
 
+If you plan to use E-mail Token authentication, you must also `configure your e-mail backend`_.
+Here's a good development setting::
+
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 Third, add the OneAll settings. Here's a minimal set-up::
 
     ONEALL = {
@@ -60,23 +65,19 @@ Here's a different, more detailed alternative to the third step::
         'email_token_expiration_hours': 3,
     }
 
-In the above example, the ``store_user_info`` feature is set to ``False`` (default is True).  This
+In the above example, the ``store_user_info`` feature is set to ``False`` (defaults to ``True``).  This
 setting provides your users with true anonymity, as none of the information provided by
 oneall.com is saved or even cached.  Instead the user's oneall identification token is hashed
 and stored as the username.
 
-The example above also makes use of the ``max_username_length`` setting.  (default value of this field
-is introspected via get_user_model()). This setting is *only* relevant when using ``store_user_info=False``.
-The primary reason for this new setting is that Django 1.10 included a migration which altered the
-auth.User model's username field max_length from 30 to 150 chars.  This means if your were making
-use of the ``store_user_info=False`` setting with Django<=1.9 and upgrade to Django>=1.10 your pre-existing
-users **will be misidentified**. If this is the case, you should set this value to `30`
+The example above also makes use of the ``max_username_length`` setting (defaults to ``30``).  This setting affects
+all generated usernames, most prominently when ``store_user_info`` is ``False``.  The primary reason for this new
+setting (introduced at django-oneall 1.3) is that Django 1.10 included a migration which altered the ``auth.User``
+model's username field ``max_length`` from 30 to 150 chars.  This means if you were not storing user info with
+``Django<1.10`` & ``django-oneall<1.3`` and upgraded to ``Django>=1.10`` & ``django-oneall<1.3``, your pre-existing
+users **have beeen misidentified**.  If this is the case, you should verify your user table and evaluate whether the
+best value for this is `30` or `150`.
 
-
-If you plan to use E-mail Token authentication, you must also `configure your e-mail backend`_.
-Here's a good setting for development::
-
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 Update Database
 ^^^^^^^^^^^^^^^
