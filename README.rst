@@ -34,7 +34,7 @@ See the `full documentation`_ for configuration.
 
 License
 -------
-Copyright (c) 2013-2015, Leandigo (|leandigo|_) and Ekevoo_.
+Copyright (c) 2013-2017, Leandigo (|leandigo|_) and Ekevoo_.
 
 Released under the MIT License. See the LICENSE_ file for details.
 
