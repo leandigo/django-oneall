@@ -27,6 +27,11 @@ Second, add the Django authentication backends::
         'django_oneall.auth.EmailTokenAuthBackend',  # Optional
     )
 
+If you plan to use E-mail Token authentication, you must also `configure your e-mail backend`_.
+Here's a good development setting::
+
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 Third, add the OneAll settings. Here's a minimal set-up::
 
     ONEALL = {
@@ -55,14 +60,24 @@ Here's a different, more detailed alternative to the third step::
             'grid_sizes': [7, 5],
             # Any setting allowed in the login widget assistant can be put here.
         },
-        'store_user_info': True,
+        'store_user_info': False,
+        'max_username_length': 30,
         'email_token_expiration_hours': 3,
     }
 
-If you plan to use E-mail Token authentication, you must also `configure your e-mail backend`_.
-Here's a good setting for development::
+In the above example, the ``store_user_info`` feature is set to ``False`` (defaults to ``True``).  This
+setting provides your users with true anonymity, as none of the information provided by
+oneall.com is saved or even cached.  Instead the user's oneall identification token is hashed
+and stored as the username.
 
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+The example above also makes use of the ``max_username_length`` setting (defaults to ``30``).  This setting affects
+all generated usernames, most prominently when ``store_user_info`` is ``False``.  The primary reason for this new
+setting (introduced at django-oneall 1.3) is that Django 1.10 included a migration which altered the ``auth.User``
+model's username field ``max_length`` from 30 to 150 chars.  This means if you were not storing user info with
+``Django<1.10`` & ``django-oneall<1.3`` and upgraded to ``Django>=1.10`` & ``django-oneall<1.3``, your pre-existing
+users **have beeen misidentified**.  If this is the case, you should verify your user table and evaluate whether the
+best value for this is `30` or `150`.
+
 
 Update Database
 ^^^^^^^^^^^^^^^
